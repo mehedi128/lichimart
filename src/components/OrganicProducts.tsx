@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, X } from 'lucide-react';
+import lichiVideoPlaceholder from '../assets/images/lichi_video_placeholder_1779545654903.png';
 
 export default function OrganicProducts() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -89,7 +90,7 @@ export default function OrganicProducts() {
           <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden rounded-[24px] sm:rounded-[36px] shadow-2xl group border border-brand-green-800">
             {/* Main Picture representing the organic farming fields & worker */}
             <img 
-              src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop" 
+              src={lichiVideoPlaceholder} 
               alt="Organic Lychee Orchard Dawn Harvest Video" 
               className="w-full h-full object-cover transition-transform duration-750 group-hover:scale-102"
               referrerPolicy="no-referrer"
@@ -170,28 +171,28 @@ export default function OrganicProducts() {
               className="absolute inset-0 bg-black/85 backdrop-blur-md"
             />
 
-            {/* Video container card popup */}
+            {/* Video container card popup styled for vertical Shorts video */}
             <motion.div 
               initial={{ opacity: 0, scale: 0.95, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 30 }}
               transition={{ duration: 0.3 }}
-              className="relative w-full max-w-4xl rounded-2xl overflow-hidden bg-black aspect-video z-10 border border-gray-800 shadow-2xl"
+              className="relative w-full max-w-[380px] rounded-3xl overflow-hidden bg-black aspect-[9/16] max-h-[85vh] z-10 border border-brand-green-800 shadow-2xl"
             >
               {/* Close Button top-right */}
               <button 
                 onClick={() => setIsVideoOpen(false)}
-                className="absolute top-4 right-4 z-20 rounded-full bg-black/60 hover:bg-black/90 p-2 text-white hover:text-brand-lime transition shadow-md cursor-pointer"
+                className="absolute top-4 right-4 z-20 rounded-full bg-black/60 hover:bg-black/90 p-2.5 text-white hover:text-brand-lime transition shadow-md cursor-pointer"
                 aria-label="Close video player"
               >
                 <X className="h-5 w-5" />
               </button>
 
-              {/* Cinematic Farming Stock Embed / High quality player rendering */}
+              {/* LichiMart Orchard Short Video Embed */}
               <iframe 
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" 
-                title="Organic Agri Fields Video"
+                src="https://www.youtube.com/embed/WVyXlzMFMko?autoplay=1" 
+                title="LichiMart Lychee Orchard Harvest"
                 frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowFullScreen

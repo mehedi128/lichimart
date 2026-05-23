@@ -52,11 +52,11 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
             
             <div className="space-y-3 w-full">
               <h2 className="font-heading text-3xl font-extrabold text-white md:text-5xl lg:leading-tight">
-                তাত্ক্ষণিক অফার: <br />
+                কালবৈশাখী অফার: <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-brand-lime to-amber-500">
                   প্রিমিয়াম চায়না-৩
                 </span> <br />
-                এখন ১৫% ছাড়ে!
+                এখন ১০% ছাড়ে!
               </h2>
               <p className="font-sans text-xs text-gray-300 md:text-sm leading-relaxed max-w-xl mx-auto lg:mx-0">
                 এই সপ্তাহে আমাদের বাগানের চায়না-৩ লিচুতে অসাধারণ মিষ্টির স্বাদ দেখা গেছে! মধুর মতো মিষ্টি, ছোট বীজযুক্ত এবং ঘন রসালো শাঁস। আমরা আমাদের প্রতি পিসের মূল্য <span className="line-through text-gray-405">৳১৮.০০</span> থেকে কমিয়ে মাত্র <strong className="text-brand-lime">৳১৫.০০</strong> করেছি। অফারের সময় শেষ হওয়ার আগে আজই অর্ডার করুন!
@@ -87,31 +87,17 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
               </div>
             </div>
 
-            {/* Claim list benefits */}
-            <div className="grid gap-2.5 max-w-md pt-2 text-left">
-              <div className="flex items-center gap-2 text-xs text-gray-300">
-                <CheckCircle2 className="h-4.5 w-4.5 text-brand-lime" />
-                <span>লিমিটেড কুপন ব্যবহার করুন: <strong className="text-white font-mono bg-brand-green-900 border border-brand-green-800 px-1.5 py-0.5 rounded">LICHIMART10</strong></span>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-300">
-                <CheckCircle2 className="h-4.5 w-4.5 text-brand-lime" />
-                <span>সরাসরি এক্সপ্রেস হোম ডেলিভারি অন্তর্ভুক্ত</span>
-              </div>
-            </div>
-
             {/* Action buttons */}
             <div className="pt-4 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <button
-                onClick={onClaimOffer}
-                className="group flex cursor-pointer items-center justify-center gap-2 rounded-full bg-brand-lime hover:bg-brand-lime-hover px-7 h-12 text-xs font-bold text-brand-green-950 uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-lg"
-              >
-                <span>অফারটি গ্রহণ করুন</span>
-                <ArrowRight className="h-4 w-4 group-hover:translate-x-1.5 transition-transform" />
-              </button>
-              
               <div className="flex items-center justify-center gap-2 px-4 py-2 border border-brand-green-800 bg-brand-green-900/50 rounded-full text-xs text-gray-300 shadow-sm">
-                <Clock className="h-4 w-4 text-brand-lime" />
-                <span>ডেলিভারি: আগামী কাল ভোর ৫:০০ টায় নির্ধারিত</span>
+                <svg
+                  className="h-4 w-4 text-brand-lime"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.746.953 3.71 1.455 5.703 1.456h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                <span>হোয়াটসঅ্যাপ মেসেজ দিন </span>
               </div>
             </div>
           </div>
@@ -152,10 +138,6 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
                 <h4 className="font-heading text-sm font-bold text-white uppercase tracking-wide">প্রিমিয়াম চায়না-৩ লিচু</h4>
                 <p className="text-[10px] text-gray-400 mt-1">আমাদের সর্বাধিক কাঙ্ক্ষিত চমৎকার ফল</p>
               </div>
-            </div>
-
-            <div className="absolute right-4 bottom-4 z-10 rounded-full bg-brand-lime text-brand-green-955 font-bold px-3 py-1.5 text-[10px] font-mono shadow-md animate-bounce">
-              🚚 ৬০ মিনিটে এক্সপ্রেস ডেলিভারি প্রস্তুত
             </div>
           </div>
 

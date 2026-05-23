@@ -34,11 +34,20 @@ export const LYCHEE_PRODUCTS: Product[] = [
     reviewsCount: 92,
     weight: '1',
     badge: 'POPULAR',
-    image: 'https://lh3.googleusercontent.com/d/16gB8wwFpBOq50ic35mO6BbNjfbOXSht6',
+    image: 'https://lh3.googleusercontent.com/d/1G9Xipl0UGNozf8zFeftukNvaE6u6VBh8',
     images: [
-      'https://lh3.googleusercontent.com/d/16gB8wwFpBOq50ic35mO6BbNjfbOXSht6',
-      'https://lh3.googleusercontent.com/d/1QCzQGZ9kYMm4sSshWjjR4WWhipOi1Vqe',
-      'https://lh3.googleusercontent.com/d/1CHDrBr1A7Y0DcMWF2U0gYSt8H8lyah7_'
+      'https://lh3.googleusercontent.com/d/1G9Xipl0UGNozf8zFeftukNvaE6u6VBh8',
+      'https://lh3.googleusercontent.com/d/1YEUVwpF-662bB3zNmFL8ptzXQnvWRoSn',
+      'https://lh3.googleusercontent.com/d/1dBHDGYIYCqyTg_57hvlFXT6MZ3t_FXVn',
+      'https://lh3.googleusercontent.com/d/1UC46qkvUWiGs5UWSOCIQM_q9B8FWYNJk',
+      'https://lh3.googleusercontent.com/d/12TJu7uubqy-nmARwfjSriNBqKZpUfUYS',
+      'https://lh3.googleusercontent.com/d/1gZsFIQVFn1Cxv_8S9FQ7fMcoxbwUPxdq',
+      'https://lh3.googleusercontent.com/d/1t3mSUefBPMcIHMoroWvcjrAa0orhZwUp',
+      'https://lh3.googleusercontent.com/d/1T1E3HWAh7t4LTRlYmDRBTq8iMGx1shEq',
+      'https://lh3.googleusercontent.com/d/1FOCRAshgMOde0WOpTG8UZXqwsPj8W2dP',
+      'https://lh3.googleusercontent.com/d/1H8IoUO2kLjuqlPAL9r-xcBlaZLw-duXU',
+      'https://lh3.googleusercontent.com/d/1tb-E_wcj6d0IcFgpZyJd_R2n8kDWg0RQ',
+      'https://lh3.googleusercontent.com/d/1Mh1G39DYLqnu3Zfz8fKC7_3QM5WCNaNI'
     ],
     detailsDescription: `আমরা আপনার জন্য দিনাজপুরের আমাদের নিজস্ব বাগান থেকে প্রিমিয়াম চাইনা-৩ লিচু সরবারহ করে থাকি। 
 

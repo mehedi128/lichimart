@@ -1,68 +1,48 @@
 import React, { useRef } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, Eye, Flower2, Trees } from 'lucide-react';
+import { Sparkles, Trees } from 'lucide-react';
 
 interface GalleryItem {
   id: string;
   url: string;
-  title: string;
-  tag: string;
 }
 
 const row1Items: GalleryItem[] = [
   {
     id: 'g-1',
     url: 'https://lh3.googleusercontent.com/d/1sHriJDIqG4FQsei9ljq7Oqqsgn_wa1t8',
-    title: 'গাছের ডালে পাকা সিঁদুরে লিচু (Lush Crimson Branch)',
-    tag: 'DINAJPUR ORCHARD',
   },
   {
     id: 'g-2',
     url: 'https://lh3.googleusercontent.com/d/1mmybkuvbETgBk8keAWeYGHte6HWDOnPh',
-    title: 'সদ্য পাড়া তাজা লিচুর তোড়া (Freshly Plucked Bunches)',
-    tag: 'MORNING HARVEST',
   },
   {
     id: 'g-3',
     url: 'https://lh3.googleusercontent.com/d/16gB8wwFpBOq50ic35mO6BbNjfbOXSht6',
-    title: 'হাতে বাছাই করা প্রিমিয়াম চায়না-৩ (Premium China-3)',
-    tag: 'CHINA-3 GRADE',
   },
   {
     id: 'g-4',
     url: 'https://lh3.googleusercontent.com/d/1RhS1wg0Q4nSXkV8l6Xxy6ckE2dj9nvVF',
-    title: 'shining রোদেলা মিষ্টি ফল (Sunlit Lychees)',
-    tag: '100% ORGANIC',
   },
   {
     id: 'g-5',
     url: 'https://lh3.googleusercontent.com/d/1QCzQGZ9kYMm4sSshWjjR4WWhipOi1Vqe',
-    title: 'বাতিঘর লাল টকটকে চামড়া (Dynamic Red Rinds)',
-    tag: 'ROYAL QUALITY',
   },
   {
     id: 'g-6',
     url: 'https://lh3.googleusercontent.com/d/1SkFf-58Im1N6Vm-VsR_ea271j_W7n2IX',
-    title: 'ভোরের তাজা সবুজ বাগান (Dew-kissed Foliage)',
-    tag: 'NATURAL BLOOM',
   },
   {
     id: 'g-7',
     url: 'https://lh3.googleusercontent.com/d/1CHDrBr1A7Y0DcMWF2U0gYSt8H8lyah7_',
-    title: 'মধুমাস ও সতেজ ফল (Bountiful Summer Harvest)',
-    tag: 'SWEET NECTAR',
   },
   {
     id: 'g-8',
     url: 'https://lh3.googleusercontent.com/d/1feVUb2mBiD0EyWyoxLDboQU_blmW-pvw',
-    title: 'ঐতিহ্যবাহী লিচু বাগান (Dinajpur Native Groves)',
-    tag: 'HERITAGE CARE',
   },
   {
     id: 'g-9',
     url: 'https://lh3.googleusercontent.com/d/1E4s1cQ5jQ5WZ5HU9N0RmasVEK0NfrNhP',
-    title: 'যত্ন সহকারে বাগান থেকে সরাসরি (Handpicked Treats)',
-    tag: 'TACTILE INSPECTION',
   }
 ];
 
@@ -70,74 +50,50 @@ const row2Items: GalleryItem[] = [
   {
     id: 'g-2-1',
     url: 'https://lh3.googleusercontent.com/d/1G9Xipl0UGNozf8zFeftukNvaE6u6VBh8',
-    title: 'রসালো ও পরিপক্ব লাল লিচু (Rich Carmine Clusters)',
-    tag: 'SWEET BERRY',
   },
   {
     id: 'g-2-2',
     url: 'https://lh3.googleusercontent.com/d/1YEUVwpF-662bB3zNmFL8ptzXQnvWRoSn',
-    title: 'বাগান থেকে সরাসরি তাজা লিচু (Sun-Kissed Orchard)',
-    tag: '100% ORGANIC',
   },
   {
     id: 'g-2-3',
     url: 'https://lh3.googleusercontent.com/d/1dBHDGYIYCqyTg_57hvlFXT6MZ3t_FXVn',
-    title: 'নিখুঁত মিষ্টি চায়না-৩ লিচু (Pure China-3 Grade)',
-    tag: 'PREMIUM CHOICE',
   },
   {
     id: 'g-2-4',
     url: 'https://lh3.googleusercontent.com/d/1UC46qkvUWiGs5UWSOCIQM_q9B8FWYNJk',
-    title: 'হাতে বাছাই করা সতেজ তোড়া (Handpicked Clump)',
-    tag: 'FRESH HARVEST',
   },
   {
     id: 'g-2-5',
     url: 'https://lh3.googleusercontent.com/d/12TJu7uubqy-nmARwfjSriNBqKZpUfUYS',
-    title: 'মধুমাসের সেরা উপহার (Gourmet Fruit Treats)',
-    tag: 'ROYAL BASKET',
   },
   {
     id: 'g-2-6',
     url: 'https://lh3.googleusercontent.com/d/1gZsFIQVFn1Cxv_8S9FQ7fMcoxbwUPxdq',
-    title: 'তাজা ও গুণগত মানসম্পন্ন ফল (Aromatic Nectar)',
-    tag: 'QUALITY ASSURED',
   },
   {
     id: 'g-2-7',
     url: 'https://lh3.googleusercontent.com/d/1t3mSUefBPMcIHMoroWvcjrAa0orhZwUp',
-    title: 'দিনাজপুরের সেরা ঐতিহ্যবাহী সিলেকশন (Traditional Harvest)',
-    tag: 'DINAJPUR NATIVE',
   },
   {
     id: 'g-2-8',
     url: 'https://lh3.googleusercontent.com/d/1T1E3HWAh7t4LTRlYmDRBTq8iMGx1shEq',
-    title: 'রসালো তাজা লিচুর তোড় (Juicy Crimson Bunches)',
-    tag: 'NATURAL BLOOM',
   },
   {
     id: 'g-2-9',
     url: 'https://lh3.googleusercontent.com/d/1FOCRAshgMOde0WOpTG8UZXqwsPj8W2dP',
-    title: 'সরাসরি আপনার ঠিকানায় প্রস্তুত (Ready for Dispatch)',
-    tag: 'FAST LOGISTICS',
   },
   {
     id: 'g-2-10',
     url: 'https://lh3.googleusercontent.com/d/1H8IoUO2kLjuqlPAL9r-xcBlaZLw-duXU',
-    title: 'গাছের ডালে সতেজ লিচুর সমারোহ (Lush Hanging Lychees)',
-    tag: 'ORCHARD BLOOM',
   },
   {
     id: 'g-2-11',
     url: 'https://lh3.googleusercontent.com/d/1tb-E_wcj6d0IcFgpZyJd_R2n8kDWg0RQ',
-    title: 'প্রাকৃতিক ও জৈব পরিচর্যা (Bio-Safe Native Soil)',
-    tag: 'ECO FRIENDLY',
   },
   {
     id: 'g-2-12',
     url: 'https://lh3.googleusercontent.com/d/1Mh1G39DYLqnu3Zfz8fKC7_3QM5WCNaNI',
-    title: 'ঐতিহ্যবাহী খাঁচায় সাজানো সতেজ লিচু (Eco-Bamboo Packaging)',
-    tag: 'ECO PACKING',
   }
 ];
 
@@ -198,14 +154,10 @@ export default function OrchardGallery() {
               >
                 <img 
                   src={item.url} 
-                  alt={item.title}
+                  alt="Dinajpur Lychee Orchard"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 md:p-8 text-left pointer-events-none">
-                  <span className="font-mono text-[9px] md:text-xs font-black text-brand-lime tracking-widest uppercase mb-1">{item.tag}</span>
-                  <p className="font-heading text-xs md:text-lg font-bold text-white tracking-wide">{item.title}</p>
-                </div>
               </div>
             ))}
           </motion.div>
@@ -229,14 +181,10 @@ export default function OrchardGallery() {
               >
                 <img 
                   src={item.url} 
-                  alt={item.title}
+                  alt="Dinajpur Lychee Orchard"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 md:p-8 text-left pointer-events-none">
-                  <span className="font-mono text-[9px] md:text-xs font-black text-brand-lime tracking-widest uppercase mb-1">{item.tag}</span>
-                  <p className="font-heading text-xs md:text-lg font-bold text-white tracking-wide">{item.title}</p>
-                </div>
               </div>
             ))}
           </motion.div>
@@ -244,15 +192,7 @@ export default function OrchardGallery() {
 
       </div>
 
-      {/* Decorative Interactive Progress/Parallax State Footer */}
-      <div className="max-w-xl mx-auto px-4 mt-12 flex items-center justify-between font-mono text-[10px] text-gray-400 border-t border-brand-green-900/60 pt-4">
-        <span className="flex items-center gap-1 text-gray-350">
-          <Eye className="h-3.5 w-3.5 text-brand-lime" /> স্বয়ংক্রিয় স্লাইড গ্যালারি মোশন মোড
-        </span>
-        <span className="flex items-center gap-1">
-          <Flower2 className="h-3.5 w-3.5 text-red-500" /> বিশুদ্ধ প্রাকৃতিক ও জৈব চাষ পদ্ধতি
-        </span>
-      </div>
+
 
     </section>
   );
