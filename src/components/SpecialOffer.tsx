@@ -111,7 +111,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
             </div>
 
             {/* Main floating promotional product */}
-            <div className="relative mx-auto max-w-xs p-6 bg-[#032014] border border-brand-green-800 rounded-2xl shadow-2xl backdrop-blur-sm group hover:border-brand-lime transition-all duration-500">
+            <div className="relative mx-auto max-w-sm p-6 bg-[#032014] border border-brand-green-800 rounded-2xl shadow-2xl backdrop-blur-sm group hover:border-brand-lime transition-all duration-500">
               {/* Spinning 60% badge */}
               <div className="absolute -right-4 -top-4 z-10 flex h-16 w-16 flex-col items-center justify-center rounded-full bg-yellow-450 text-gray-950 shadow-xl border-3 border-[#032014] font-heading rotate-[-12deg] group-hover:rotate-0 transition-all duration-300">
                 <span className="text-[9px] font-extrabold font-mono leading-none">হট</span>
@@ -128,7 +128,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
               </div>
 
               <img
-                src="https://images.unsplash.com/photo-1541432901042-2d8bd64b4a9b?q=80&w=500&auto=format&fit=crop"
+                src="https://lh3.googleusercontent.com/d/1VGpfbV57uBb0GP0RWVGzSfAbMg5PS_-L"
                 alt="Premium China-3 Lychees harvest"
                 className="w-full h-auto aspect-square rounded-xl object-cover transition-transform duration-500 group-hover:scale-105 border border-brand-green-800"
                 referrerPolicy="no-referrer"

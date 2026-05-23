@@ -67,27 +67,52 @@ export const LYCHEE_PRODUCTS: Product[] = [
 export const TESTIMONIALS: Testimonial[] = [
   {
     id: 't1',
-    name: 'Sajjad Al Mahmud',
-    role: 'Verified Customer, Dhaka',
-    feedback: 'Superb quality lychees! Ordered a premium gift basket of China-3 and every single fruit was huge, sweet, and bursting with fresh nectar. Not a single bad piece. LichiMart is now my only source for lychees!',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
-    rating: 5
+    name: 'MD. Ashikur Rahman',
+    role: 'recommends LichiMart',
+    feedback: 'পিওর এন্ড বেস্ট কোয়ালিটি।। ধন্যবাদ 🙏',
+    avatar: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?q=80&w=150&auto=format&fit=crop',
+    rating: 5,
+    fbDate: 'May 29, 2025',
+    fbLikes: 12,
+    fbShares: 0,
+    fbScreenshot: 'https://lh3.googleusercontent.com/d/1h3aw6e-KHdNUHijRaT0xWo6BcJezqQAb'
   },
   {
     id: 't2',
-    name: 'Fariha Yasmin',
-    role: 'Food Critic & Pastry Chef',
-    feedback: 'The Bedana lychees from LichiMart are of another world. Seed size is virtually non-existent, leaving purely dense, pristine fruit. Combined with their pure blossom honey, it is an absolute culinary dream!',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop',
-    rating: 5
+    name: 'Tanvir Islam',
+    role: 'recommends LichiMart',
+    feedback: 'Sweet, juicy, and absolutely delicious — highly recommended lychees',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop',
+    rating: 5,
+    fbDate: 'May 28, 2025',
+    fbLikes: 34,
+    fbShares: 1,
+    fbScreenshot: 'https://lh3.googleusercontent.com/d/1G-TPcUI33UB2FO132BaWe8vttIW99EVY'
   },
   {
     id: 't3',
-    name: 'Nadim Chowdhury',
-    role: 'Corporate Sourcing Manager',
-    feedback: 'Sourced over 50 gourmet bamboo cages for our executive client gift list. Delivery was handled on time, and our clients were deeply impressed by the sustainable, artisanal presentation. Highly recommended.',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop',
-    rating: 5
+    name: 'Rifatul Alam',
+    role: 'recommends LichiMart',
+    feedback: '5*\n\nQuality was great. Recommended.',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop',
+    rating: 5,
+    fbDate: 'June 8, 2024',
+    fbLikes: 9,
+    fbShares: 0,
+    fbScreenshot: 'https://lh3.googleusercontent.com/d/1CHp_iQSnUX1vihy92SWpueZdDuEMWA6U'
+  },
+  {
+    id: 't4',
+    name: 'Masud Abdullah',
+    role: 'recommends LichiMart',
+    feedback: 'কেমিক্যাল মুক্ত একদম ফ্রেশ লিচু। কোয়ালিটি এক কথায় অসাধারণ। একদিনের মধ্যেই ডেলিভারি পেয়েছি।',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop',
+    rating: 5,
+    fbDate: 'May 27, 2025',
+    fbLikes: 156,
+    fbShares: 2,
+    fbImage: 'https://lh3.googleusercontent.com/d/1gZsFIQVFn1Cxv_8S9FQ7fMcoxbwUPxdq',
+    fbScreenshot: 'https://lh3.googleusercontent.com/d/1fbWAKa6QA9pxXcYa4AE4xqJMug1crf4N'
   }
 ];
 

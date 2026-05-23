@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Phone, ArrowUp, Send, Check, X, Sparkles, ShieldCheck } from 'lucide-react';
+import { Mail, MapPin, Phone, ArrowUp, Send, Check, X, Sparkles, ShieldCheck, Facebook } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import LichiMartLogo from './LichiMartLogo';
+
 import aboutFarmerImage from '../assets/images/lichi_about_farmer_1779383720201.png';
 
 interface FooterProps {
@@ -73,7 +75,7 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
           className="grid md:grid-cols-2 rounded-[28px] overflow-hidden bg-[#245136] shadow-2xl border border-brand-green-800/40"
         >
           {/* Left panel: Vibrant green market farm produce */}
-          <div className="relative h-48 md:h-[300px]">
+          <div className="relative h-48 md:h-full min-h-[300px]">
             <img 
               src={aboutFarmerImage} 
               alt="আমাদের ঐতিহ্যবাহী লিচু বাগান ও কৃষক পরিবার"
@@ -85,17 +87,22 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
           </div>
 
           {/* Right panel: Bold botanical green join community banner */}
-          <div className="p-8 sm:p-10 md:p-12 lg:p-16 flex flex-col justify-center items-start text-left bg-[#245136] space-y-5 md:space-y-6">
+          <div className="py-14 sm:py-20 md:py-24 lg:py-28 px-8 sm:px-10 md:px-12 lg:px-16 flex flex-col justify-center items-start text-left bg-[#245136] space-y-5 md:space-y-6">
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-white tracking-tight leading-tight">
               আমাদের চাষী পরিবারের <br /> অংশ হোন
             </h2>
             
-            <button
-              onClick={() => setIsContactModalOpen(true)}
-              className="bg-white hover:bg-gray-100 text-[#245136] font-heading font-bold px-8 py-3.5 rounded-full transition-transform active:scale-95 duration-150 cursor-pointer text-xs md:text-sm tracking-widest uppercase shadow-md select-none"
-            >
-              যোগাযোগ করুন
-            </button>
+            <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+              <a
+                href="https://www.facebook.com/lichimart"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-heading font-bold px-8 py-3.5 rounded-full transition-transform active:scale-95 duration-150 cursor-pointer text-xs md:text-sm tracking-widest uppercase shadow-md select-none text-center"
+              >
+                <Facebook className="h-4 w-4 fill-current shrink-0" />
+                <span>ফেসবুক পেজ</span>
+              </a>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -104,10 +111,8 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 -mt-6 sm:-mt-10 md:-mt-12 pb-8 grid gap-8 md:grid-cols-12 items-start text-left">
         
         {/* Brand/Playful Logo col - Left */}
-        <div className="md:col-span-5 space-y-4">
-          <h3 className="font-serif text-3xl sm:text-4xl text-[#6baf86] italic font-semibold tracking-wide select-none">
-            LichiMart
-          </h3>
+        <div className="md:col-span-5 space-y-3">
+          <LichiMartLogo className="h-11 sm:h-12 w-auto" lightMode={false} />
           <p className="text-xs text-gray-400 font-sans max-w-xs leading-relaxed">
             বাংলার অন্যতম সেরা ও বিশুদ্ধ তাজা গাছ পাকা অর্গানিক লিচু সরবরাহের ঐতিহ্য। সরাসরি আমাদের সতেজ ও স্বাস্থ্যকর সেরা কৃষি বাগানের স্বাদ পৌঁছে দিচ্ছি আপনার দ্বারে।
           </p>

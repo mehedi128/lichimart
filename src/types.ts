@@ -35,6 +35,11 @@ export interface Testimonial {
   feedback: string;
   avatar: string;
   rating: number;
+  fbDate?: string;
+  fbLikes?: number;
+  fbShares?: number;
+  fbImage?: string;
+  fbScreenshot?: string;
 }
 
 export interface CheckoutDetails {

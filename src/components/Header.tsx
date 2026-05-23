@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShoppingBag, Heart, Search, Phone, Menu, X, Facebook } from 'lucide-react';
+import LichiMartLogo from './LichiMartLogo';
 
 interface HeaderProps {
   cartCount: number;
@@ -28,7 +29,6 @@ export default function Header({
     { label: 'আমাদের পণ্য', target: 'products' },
     { label: 'বিশেষ অফার', target: 'deal' },
     { label: 'গ্রাহক মতামত', target: 'testimonials' },
-    { label: 'ব্লগ ও খবর', target: 'news' },
   ];
 
   const handleNavClick = (target: string) => {
@@ -65,21 +65,9 @@ export default function Header({
         {/* Brand Logo */}
         <div 
           onClick={() => handleNavClick('home')} 
-          className="flex cursor-pointer items-center gap-2"
+          className="flex cursor-pointer items-center gap-1.5 md:gap-2 select-none"
         >
-          {/* Lychee shaped organic emblem */}
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-rose-700 shadow-md">
-            <span className="absolute -top-1 right-2 text-brand-lime text-base font-bold">🍃</span>
-            <span className="text-white font-mono text-xl font-extrabold tracking-tighter">L</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-heading text-lg font-bold tracking-tight text-white md:text-xl">
-              Lichi<span className="text-brand-lime">Mart</span>
-            </span>
-            <span className="font-mono text-[9px] uppercase tracking-widest text-[#FFA0B4]">
-              প্রিমিয়াম অর্গানিক
-            </span>
-          </div>
+          <LichiMartLogo className="h-9 sm:h-10 md:h-11 w-auto" />
         </div>
 
         {/* Desktop Navigation */}
@@ -98,25 +86,6 @@ export default function Header({
 
         {/* Dynamic Search & Interaction Tray */}
         <div className="flex items-center gap-3 sm:gap-4">
-          {/* Search bar */}
-          <div className="relative hidden max-w-xs sm:block md:max-w-md">
-            <input
-              type="text"
-              placeholder="লিচু পণ্য খুঁজুন..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-48 xl:w-60 rounded-full border border-brand-green-700 bg-brand-green-900 py-1.5 pl-9 pr-4 text-xs text-white placeholder-gray-400 focus:border-brand-lime focus:outline-none focus:ring-1 focus:ring-brand-lime transition-all duration-300"
-            />
-            <Search className="absolute left-3.5 top-2 h-3.5 w-3.5 text-gray-400" />
-            {searchQuery && (
-              <button
-                onClick={() => onSearchChange('')}
-                className="absolute right-3 top-2.5 rounded-full p-0.5 text-gray-400 hover:text-white"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            )}
-          </div>
 
           {/* Social Mobile Shortcut (Visible on Mobile) */}
           <a
@@ -171,25 +140,6 @@ export default function Header({
       {/* Mobile Menu Panel */}
       {isMobileMenuOpen && (
         <div className="lg:hidden border-t border-brand-green-800 bg-brand-green-950 px-4 py-4 space-y-4">
-          {/* Mobile search */}
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="লিচু খুঁজুন..."
-              value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full rounded-full border border-brand-green-700 bg-brand-green-900 py-2 pl-10 pr-4 text-xs text-white focus:border-brand-lime focus:outline-none"
-            />
-            <Search className="absolute left-3.5 top-3.5 h-3.5 w-3.5 text-gray-400" />
-            {searchQuery && (
-              <button
-                onClick={() => onSearchChange('')}
-                className="absolute right-4 top-3 text-gray-400 hover:text-white"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
 
           <div className="flex flex-col gap-3">
             {navItems.map((item) => (
