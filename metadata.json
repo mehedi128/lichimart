@@ -1,0 +1,6 @@
+{
+  "name": "LichiMart",
+  "description": "Premium fresh organic lychees direct from the orchard, featuring a complete product catalog, shopping cart, and intuitive secure checkout system.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

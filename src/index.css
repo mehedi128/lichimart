@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Custom colors for organic Botanica Green theme matching the uploaded image */
+  --color-brand-green-950: #02140d;
+  --color-brand-green-905: #032115;
+  --color-brand-green-900: #032115;
+  --color-brand-green-800: #043621;
+  --color-brand-green-700: #084d31;
+  --color-brand-green-600: #107e53;
+  --color-brand-green-500: #1ab277;
+  --color-brand-lime: #FFA0B4;
+  --color-brand-lime-hover: #ff8ca3;
+}
+
+/* Base custom styles to refine layout flow */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-brand-green-950);
+  color: #f3f4f6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar for deep garden aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #02140d;
+}
+::-webkit-scrollbar-thumb {
+  background: #084d31;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FFA0B4;
+}
