@@ -106,7 +106,7 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
         {/* Brand/Playful Logo col - Left */}
         <div className="md:col-span-5 space-y-4">
           <h3 className="font-serif text-3xl sm:text-4xl text-[#6baf86] italic font-semibold tracking-wide select-none">
-            তাজা লিচুর বাজার
+            LichiMart
           </h3>
           <p className="text-xs text-gray-400 font-sans max-w-xs leading-relaxed">
             বাংলার অন্যতম সেরা ও বিশুদ্ধ তাজা গাছ পাকা অর্গানিক লিচু সরবরাহের ঐতিহ্য। সরাসরি আমাদের সতেজ ও স্বাস্থ্যকর সেরা কৃষি বাগানের স্বাদ পৌঁছে দিচ্ছি আপনার দ্বারে।
