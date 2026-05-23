@@ -105,11 +105,11 @@ export default function Hero({ onExploreClick, phone }: HeroProps) {
         >
           <div className="flex text-amber-500">
             {[1, 2, 3, 4, 5].map((s) => (
-              <Star key={s} className="h-3.5 w-3.5 fill-current text-[#FFA0B4]" />
+              <Star key={s} className="h-3.5 w-3.5 fill-current text-yellow-400" />
             ))}
           </div>
           <span className="text-gray-400 font-sans text-center">
-            সারা বাংলাদেশের <strong className="text-white">১,৫০০+ সুখে ভরপুর পরিবারে</strong> পরম ভালোবাসায় সমাদৃত
+            সারা বাংলাদেশের <strong className="text-white">৫০০+ পরিবারে</strong> পরম ভালোবাসায় সমাদৃত
           </span>
         </motion.div>
       </div>

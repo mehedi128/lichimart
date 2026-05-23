@@ -16,7 +16,7 @@ import { Heart, Search, ShoppingBag, Trash2, X, Plus, Play, Calendar, Link, Spar
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
-  const HOTLINE_PHONE = '+880123-456789';
+  const HOTLINE_PHONE = '01947970939';
 
   // State Management
   const [cartCount, setCartCount] = useState(0);

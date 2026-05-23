@@ -11,10 +11,16 @@ export const LYCHEE_PRODUCTS: Product[] = [
     reviewsCount: 148,
     weight: '1',
     badge: 'BEST SELLER',
-    image: 'https://lh3.googleusercontent.com/d/1mmybkuvbETgBk8keAWeYGHte6HWDOnPh',
+    image: 'https://lh3.googleusercontent.com/d/1RhS1wg0Q4nSXkV8l6Xxy6ckE2dj9nvVF',
     images: [
+      'https://lh3.googleusercontent.com/d/1RhS1wg0Q4nSXkV8l6Xxy6ckE2dj9nvVF',
+      'https://lh3.googleusercontent.com/d/1E4s1cQ5jQ5WZ5HU9N0RmasVEK0NfrNhP',
+      'https://lh3.googleusercontent.com/d/1feVUb2mBiD0EyWyoxLDboQU_blmW-pvw',
       'https://lh3.googleusercontent.com/d/1mmybkuvbETgBk8keAWeYGHte6HWDOnPh',
-      'https://lh3.googleusercontent.com/d/1RhS1wg0Q4nSXkV8l6Xxy6ckE2dj9nvVF'
+      'https://lh3.googleusercontent.com/d/1sHriJDIqG4FQsei9ljq7Oqqsgn_wa1t8',
+      'https://lh3.googleusercontent.com/d/1QCzQGZ9kYMm4sSshWjjR4WWhipOi1Vqe',
+      'https://lh3.googleusercontent.com/d/1CPJpysEINOkzR5k6PcApOOq9MChgpmbc',
+      'https://lh3.googleusercontent.com/d/1SkFf-58Im1N6Vm-VsR_ea271j_W7n2IX'
     ],
     detailsDescription: `আমরা আপনার জন্য দিনাজপুরের আমাদের নিজস্ব বাগান থেকে প্রিমিয়াম বোম্বাই লিচু সরবারহ করে থাকি। লিচুর স্কিন খুবই সেন্সিটিভ। পরিবহনের সময় ৩-৫% ক্ষেত্রে চামড়া শুকিয়ে যাওয়া বা ফেটে যেতে পারে। তবে এতে লিচুর ভেতরে সাধারণত কোনো সমস্যা হয় না। কুরিয়ার পয়েন্টে পৌঁছে যাওয়ার পর খুব দ্রুত পার্সেল সংগ্রহ করে নিতে হবে। পার্সেল কুরিয়ার পয়েন্টে পৌঁছানোর পর দ্রুত সংগ্রহ করার অনুরোধ রইলো।`,
     benefits: [
@@ -34,20 +40,14 @@ export const LYCHEE_PRODUCTS: Product[] = [
     reviewsCount: 92,
     weight: '1',
     badge: 'POPULAR',
-    image: 'https://lh3.googleusercontent.com/d/1G9Xipl0UGNozf8zFeftukNvaE6u6VBh8',
+    image: 'https://lh3.googleusercontent.com/d/1CA06T3Z0v22EYI4TGSyweV4K8GJuA-TK',
     images: [
-      'https://lh3.googleusercontent.com/d/1G9Xipl0UGNozf8zFeftukNvaE6u6VBh8',
-      'https://lh3.googleusercontent.com/d/1YEUVwpF-662bB3zNmFL8ptzXQnvWRoSn',
+      'https://lh3.googleusercontent.com/d/1CA06T3Z0v22EYI4TGSyweV4K8GJuA-TK',
+      'https://lh3.googleusercontent.com/d/1xqj6yG5tyoEc7BdeTUW1rrE4epHCaYZL',
       'https://lh3.googleusercontent.com/d/1dBHDGYIYCqyTg_57hvlFXT6MZ3t_FXVn',
-      'https://lh3.googleusercontent.com/d/1UC46qkvUWiGs5UWSOCIQM_q9B8FWYNJk',
-      'https://lh3.googleusercontent.com/d/12TJu7uubqy-nmARwfjSriNBqKZpUfUYS',
-      'https://lh3.googleusercontent.com/d/1gZsFIQVFn1Cxv_8S9FQ7fMcoxbwUPxdq',
-      'https://lh3.googleusercontent.com/d/1t3mSUefBPMcIHMoroWvcjrAa0orhZwUp',
-      'https://lh3.googleusercontent.com/d/1T1E3HWAh7t4LTRlYmDRBTq8iMGx1shEq',
-      'https://lh3.googleusercontent.com/d/1FOCRAshgMOde0WOpTG8UZXqwsPj8W2dP',
-      'https://lh3.googleusercontent.com/d/1H8IoUO2kLjuqlPAL9r-xcBlaZLw-duXU',
-      'https://lh3.googleusercontent.com/d/1tb-E_wcj6d0IcFgpZyJd_R2n8kDWg0RQ',
-      'https://lh3.googleusercontent.com/d/1Mh1G39DYLqnu3Zfz8fKC7_3QM5WCNaNI'
+      'https://lh3.googleusercontent.com/d/1eSobc4-VmiciQR7qpBY1HTSXOI_kMNyy',
+      'https://lh3.googleusercontent.com/d/1G9Xipl0UGNozf8zFeftukNvaE6u6VBh8',
+      'https://lh3.googleusercontent.com/d/1tb-E_wcj6d0IcFgpZyJd_R2n8kDWg0RQ'
     ],
     detailsDescription: `আমরা আপনার জন্য দিনাজপুরের আমাদের নিজস্ব বাগান থেকে প্রিমিয়াম চাইনা-৩ লিচু সরবারহ করে থাকি। 
 
