@@ -114,7 +114,7 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
         <div className="md:col-span-5 space-y-3">
           <LichiMartLogo className="h-11 sm:h-12 w-auto" lightMode={false} />
           <p className="text-xs text-gray-400 font-sans max-w-xs leading-relaxed">
-            বাংলার অন্যতম সেরা ও বিশুদ্ধ তাজা গাছ পাকা অর্গানিক লিচু সরবরাহের ঐতিহ্য। সরাসরি আমাদের সতেজ ও স্বাস্থ্যকর সেরা কৃষি বাগানের স্বাদ পৌঁছে দিচ্ছি আপনার দ্বারে।
+            বাংলাদেশের লিচু প্রেমীদের সবচেয়ে বিশ্বস্ত অনলাইন প্ল্যাটফর্ম। আমরা সরাসরি বাগান থেকে সংগ্রহ করে সারা বাংলাদেশে তাজা লিচু পৌঁছে দিই — দ্রুত, নিরাপদ ও নির্ভরযোগ্যভাবে।
           </p>
         </div>
 
@@ -135,6 +135,11 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
           <p className="font-heading text-white text-sm sm:text-base tracking-wide font-medium">
             <a href="tel:01947970939" className="hover:text-brand-lime transition">
               01947970939
+            </a>
+          </p>
+          <p className="font-heading text-white text-sm sm:text-base tracking-wide font-medium">
+            <a href="https://maps.app.goo.gl/jmfgX7zeki6BiJEu7" className="hover:text-brand-lime transition">
+              Birol, Dinajpur, Bangladesh, 2337
             </a>
           </p>
         </div>

@@ -43,7 +43,7 @@ export default function OrganicProducts() {
           {/* Left Column: Title & Action Button */}
           <div className="flex-1 space-y-6 md:space-y-8 max-w-xl text-left">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white font-heading leading-[1.15]">
-              লিচিমার্ট বাগানে <br className="hidden sm:inline" /> আপনাকে স্বাগতম
+              লিচিমার্ট এর বাগানে <br className="hidden sm:inline" /> আপনাকে স্বাগতম
             </h2>
             <div>
               <button 
@@ -137,7 +137,7 @@ export default function OrganicProducts() {
               সর্বোচ্চ মিষ্টি পরিমাপক মানদণ্ড
             </h4>
             <p className="text-sm text-gray-300 leading-relaxed font-sans">
-              প্রতিটি ব্যাচ সুনির্দিষ্টভাবে রিফ্র্যাক্টোমিটার দ্বারা মেপে নিশ্চিত করা হয় যেন এর গড় মিষ্টির মান ১৯.৫° ব্রিক্স (Brix) এর বেশি থাকে, যা আপনাকে দেয় খাঁটি মধুময় স্বাদ।
+              প্রতিটি লিচু বিশেষভাবে পরীক্ষিত — নিশ্চিত করা হয় যেন প্রতিটি কামড়ে পাওয়া যায় খাঁটি মিষ্টি ও রসালো স্বাদ।
             </p>
           </div>
 
@@ -147,10 +147,10 @@ export default function OrganicProducts() {
               {chemicalFreeIcon}
             </div>
             <h4 className="text-lg sm:text-xl font-bold text-white font-heading block">
-              বিষমুক্ত ও প্রাকৃতিক চাষাবাদ
+              পোকামুক্ত লিচু
             </h4>
             <p className="text-sm text-gray-300 leading-relaxed font-sans">
-              সম্পূর্ণ প্রাকৃতিক সার ও বিষমুক্ত উপায়ে নিবিড় পরিচর্যায় উৎপাদিত। কোনো ক্ষতিকর কৃত্রিম রাসায়নিক স্প্রে বা ফরমালিনের ব্যবহার করা হয় না।
+              বাজারের অনেক লিচুতেই পোকার সমস্যা থাকে, যা স্বাস্থ্যের জন্য ক্ষতিকর। আমার পোকামুক্ত লিচু সরবারহ করে থাকি, যেন আপনি ও আপনার পরিবার পান সম্পূর্ণ নিরাপদ ও পরিষ্কার লিচু।
             </p>
           </div>
 

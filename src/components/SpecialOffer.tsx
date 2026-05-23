@@ -91,7 +91,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
             <div className="pt-4 flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <div className="flex items-center justify-center gap-2 px-4 py-2 border border-brand-green-800 bg-brand-green-900/50 rounded-full text-xs text-gray-300 shadow-sm">
                 <svg
-                  className="h-4 w-4 text-brand-lime"
+                  className="h-6 w-6 text-brand-lime"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
