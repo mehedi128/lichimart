@@ -7,10 +7,13 @@ interface ProductImageCarouselProps {
   images: string[];
   productName: string;
   badge: React.ReactNode;
+  indicatorBgClass?: string;
 }
 
-function ProductImageCarousel({ images, productName, badge }: ProductImageCarouselProps) {
+function ProductImageCarousel({ images, productName, badge, indicatorBgClass }: ProductImageCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -20,10 +23,38 @@ function ProductImageCarousel({ images, productName, badge }: ProductImageCarous
     setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.targetTouches[0].clientX);
+    setTouchEndX(null);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndX(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX === null || touchEndX === null) return;
+    const difference = touchStartX - touchEndX;
+    const minSwipeDistance = 45; // in pixels
+
+    if (difference > minSwipeDistance) {
+      nextSlide();
+    } else if (difference < -minSwipeDistance) {
+      prevSlide();
+    }
+    setTouchStartX(null);
+    setTouchEndX(null);
+  };
+
   return (
-    <div className="relative overflow-hidden rounded-2xl border-2 border-brand-green-700/60 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[1/1] shadow-xl hover:border-brand-lime/40 transition-colors duration-500 group/carousel">
+    <div 
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+      className="relative overflow-hidden rounded-2xl border-2 border-brand-green-700/60 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[1/1] shadow-xl hover:border-brand-lime/40 transition-colors duration-500 group/carousel"
+    >
       {/* Container for images */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full select-none">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentIndex}
@@ -33,7 +64,7 @@ function ProductImageCarousel({ images, productName, badge }: ProductImageCarous
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-cover pointer-events-none"
             referrerPolicy="no-referrer"
           />
         </AnimatePresence>
@@ -44,14 +75,14 @@ function ProductImageCarousel({ images, productName, badge }: ProductImageCarous
         <>
           <button
             onClick={(e) => { e.stopPropagation(); prevSlide(); }}
-            className="absolute left-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 border border-brand-green-800 text-white opacity-0 group-hover/carousel:opacity-100 hover:bg-brand-lime hover:text-brand-green-905 hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer"
+            className="absolute left-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 border border-brand-green-800 text-white opacity-100 lg:opacity-0 lg:group-hover/carousel:opacity-100 hover:bg-brand-lime hover:text-brand-green-905 hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer"
             aria-label="Previous image"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); nextSlide(); }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 border border-brand-green-800 text-white opacity-0 group-hover/carousel:opacity-100 hover:bg-brand-lime hover:text-brand-green-905 hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer"
+            className="absolute right-3 top-1/2 -translate-y-1/2 flex h-8 w-8 items-center justify-center rounded-full bg-black/60 border border-brand-green-800 text-white opacity-100 lg:opacity-0 lg:group-hover/carousel:opacity-100 hover:bg-brand-lime hover:text-brand-green-905 hover:scale-110 active:scale-95 transition-all z-10 cursor-pointer"
             aria-label="Next image"
           >
             <ChevronRight className="h-4 w-4" />
@@ -80,7 +111,9 @@ function ProductImageCarousel({ images, productName, badge }: ProductImageCarous
 
       {/* Own Orchard Indicator */}
       <div className="absolute right-4 bottom-4 z-10 flex flex-col items-end gap-1 select-none">
-        <div className="rounded-lg bg-brand-green-950/95 border border-brand-green-800/80 backdrop-blur-sm px-2.5 py-1 font-sans text-[10px] font-semibold text-brand-lime shadow-sm flex items-center gap-1">
+        <div className={`rounded-lg backdrop-blur-sm px-2.5 py-1 font-sans text-[10px] shadow-sm flex items-center gap-1 ${
+          indicatorBgClass || 'bg-brand-green-950/95 border border-brand-green-800/80 font-semibold text-brand-lime'
+        }`}>
           <span>📸 নিজস্ব বাগানের ছবি {images.length > 1 && `(${currentIndex + 1}/${images.length})`}</span>
         </div>
       </div>
@@ -168,7 +201,7 @@ export default function ProductCatalog({
             transition={{ duration: 0.5 }}
             className="font-heading text-3xl font-extrabold text-white md:text-5xl tracking-tight"
           >
-            বাংলার সেরা বাগানের সেরা লিচু
+            দিনাজপুরের সেরা বাগানের সেরা লিচু
           </motion.h2>
           <p className="text-sm text-gray-400 max-w-xl mx-auto leading-relaxed">
             আমরা এক্সক্লুসিভ উপায়ে চাষ করি এবং সরাসরি বাগান থেকে তাজা সতেজ অবস্থায় সরবরাহ করি প্রকৃতির সেরা ও সবচেয়ে সুস্বাদু দুটি অভিজাত লিচুর জাত। প্রতিটি লিচু হাত দিয়ে নিখুঁতভাবে বাছাই করা হয়।
@@ -257,10 +290,10 @@ export default function ProductCatalog({
                   {/* Price display with optional discount markup */}
                   <div className="flex items-baseline gap-3 bg-brand-green-950/60 px-4 py-2 rounded-xl border border-brand-green-850/60 w-fit">
                     <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold self-center mr-1">মূল্য:</span>
-                    <span className="font-heading text-2xl font-black text-brand-lime">৳{bombai.price.toFixed(2)}</span>
-                    <span className="text-xs text-gray-405 font-sans">প্রতি পিস</span>
+                    <span className="font-heading text-2xl font-black text-brand-lime">৳{(bombai.price * 200).toFixed(0)}</span>
+                    <span className="text-xs text-gray-405 font-sans">প্রতি 200 পিস</span>
                     {bombai.oldPrice && (
-                       <span className="font-sans text-sm text-gray-400 font-medium line-through ml-2">৳{bombai.oldPrice.toFixed(2)}</span>
+                       <span className="font-sans text-sm text-gray-400 font-medium line-through ml-2">৳{(bombai.oldPrice * 200).toFixed(0)}</span>
                     )}
                   </div>
 
@@ -393,10 +426,10 @@ export default function ProductCatalog({
                   {/* Price display with optional discount markup */}
                   <div className="flex items-baseline gap-3 bg-brand-green-950/60 px-4 py-2 rounded-xl border border-brand-green-850/60 w-fit">
                     <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold self-center mr-1">মূল্য:</span>
-                    <span className="font-heading text-2xl font-black text-brand-lime">৳{china3.price.toFixed(2)}</span>
-                    <span className="text-xs text-gray-405 font-sans">প্রতি পিস</span>
+                    <span className="font-heading text-2xl font-black text-brand-lime">৳{(china3.price * 200).toFixed(0)}</span>
+                    <span className="text-xs text-gray-405 font-sans">প্রতি 200 পিস</span>
                     {china3.oldPrice && (
-                       <span className="font-sans text-sm text-gray-400 font-medium line-through ml-2">৳{china3.oldPrice.toFixed(2)}</span>
+                       <span className="font-sans text-sm text-gray-400 font-medium line-through ml-2">৳{(china3.oldPrice * 200).toFixed(0)}</span>
                     )}
                   </div>
 
@@ -485,6 +518,7 @@ export default function ProductCatalog({
                         <span>{china3.badge || "রাজকীয় লিচু"}</span>
                       </div>
                     }
+                    indicatorBgClass="bg-red-600/90 border border-red-500/50 text-white font-bold"
                   />
 
                   {/* Decorative background circle rings */}

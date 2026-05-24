@@ -43,7 +43,7 @@ export default function OrganicProducts() {
           {/* Left Column: Title & Action Button */}
           <div className="flex-1 space-y-6 md:space-y-8 max-w-xl text-left">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white font-heading leading-[1.15]">
-              লিচিমার্ট এর বাগানে <br className="hidden sm:inline" /> আপনাকে স্বাগতম
+              LichiMart এর বাগানে <br className="hidden sm:inline" /> আপনাকে স্বাগতম
             </h2>
             <div>
               <button 

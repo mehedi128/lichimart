@@ -142,7 +142,7 @@ export default function CartDrawer({
                           </h4>
                           <div className="flex items-center gap-2">
                             <span className="text-[10px] text-gray-400 font-sans tracking-wide">📦 {item.product.weight}</span>
-                            <span className="text-[10px] font-mono text-brand-lime font-bold">৳{item.product.price.toFixed(2)} / পিস</span>
+                            <span className="text-[10px] font-mono text-brand-lime font-bold">৳{(item.product.price * 200).toFixed(0)} / 200 পিস</span>
                           </div>
                         </div>
 

@@ -49,7 +49,7 @@ export default function Hero({ onExploreClick, phone }: HeroProps) {
           className="space-y-4 max-w-3xl"
         >
           <h1 className="font-heading text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white lg:leading-[1.15]">
-            গাছে পাকা <br />
+            গাছ পাকা <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-lime to-[#fafcfa]">
               দিনাজপুরের লিচু
             </span> <br />
@@ -101,14 +101,14 @@ export default function Hero({ onExploreClick, phone }: HeroProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 text-brand-lime text-xs font-mono"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 text-brand-lime text-xs md:text-sm font-mono"
         >
           <div className="flex text-amber-500">
             {[1, 2, 3, 4, 5].map((s) => (
-              <Star key={s} className="h-3.5 w-3.5 fill-current text-yellow-400" />
+              <Star key={s} className="h-3.5 w-3.5 md:h-4 md:w-4 fill-current text-yellow-400" />
             ))}
           </div>
-          <span className="text-gray-400 font-sans text-center">
+          <span className="text-gray-400 font-sans text-center text-xs md:text-sm md:leading-relaxed">
             সারা বাংলাদেশের <strong className="text-white">৫০০+ পরিবারে</strong> পরম ভালোবাসায় সমাদৃত
           </span>
         </motion.div>
