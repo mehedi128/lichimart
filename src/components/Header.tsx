@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShoppingBag, Heart, Search, Phone, Menu, X, Facebook } from 'lucide-react';
+import { ShoppingBag, Heart, Search, Phone, Menu, X, Facebook, Database } from 'lucide-react';
 import LichiMartLogo from './LichiMartLogo';
 
 interface HeaderProps {
@@ -10,6 +10,7 @@ interface HeaderProps {
   onCartToggle: () => void;
   onWishlistToggle: () => void;
   onNavigate: (sectionId: string) => void;
+  onSheetsConfigToggle: () => void;
 }
 
 export default function Header({
@@ -20,6 +21,7 @@ export default function Header({
   onCartToggle,
   onWishlistToggle,
   onNavigate,
+  onSheetsConfigToggle,
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -97,6 +99,17 @@ export default function Header({
           >
             <Facebook className="h-5 w-5 fill-current" />
           </a>
+
+          {/* Google Sheets Sync Admin Button */}
+          <button
+            onClick={onSheetsConfigToggle}
+            className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full hover:bg-brand-green-900 border border-transparent hover:border-brand-green-800 text-gray-300 hover:text-brand-lime transition-all cursor-pointer"
+            id="sheets-trigger-btn"
+            title="গুগল শিট সিঙ্ক"
+          >
+            <Database className="h-4 w-4 text-brand-lime" />
+            <span className="hidden sm:inline text-[11.5px] font-bold">শিট সিঙ্ক</span>
+          </button>
 
           {/* Wishlist Button */}
           <button

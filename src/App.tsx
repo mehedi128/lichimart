@@ -9,6 +9,7 @@ import OrchardGallery from './components/OrchardGallery';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import Checkout from './components/Checkout';
+import SheetsSyncModal from './components/SheetsSyncModal';
 
 import { LYCHEE_PRODUCTS } from './data';
 import { Product, CartItem } from './types';
@@ -26,6 +27,7 @@ export default function App() {
   
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isSheetsConfigOpen, setIsSheetsConfigOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'landing' | 'checkout'>('landing');
 
   // Load from local storage upon initial render
@@ -156,6 +158,7 @@ export default function App() {
         onCartToggle={() => setIsCartOpen(true)}
         onWishlistToggle={() => setIsWishlistOpen(true)}
         onNavigate={handleNavigateToSection}
+        onSheetsConfigToggle={() => setIsSheetsConfigOpen(true)}
       />
 
       <main className="flex-grow">
@@ -347,6 +350,16 @@ export default function App() {
 
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* Sheets Sync Settings Modal Overlay */}
+      <AnimatePresence>
+        {isSheetsConfigOpen && (
+          <SheetsSyncModal
+            isOpen={isSheetsConfigOpen}
+            onClose={() => setIsSheetsConfigOpen(false)}
+          />
         )}
       </AnimatePresence>
 

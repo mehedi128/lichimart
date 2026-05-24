@@ -116,11 +116,11 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center justify-between gap-6 pl-7 pr-3 py-3.5 bg-[#032014] hover:bg-black active:scale-95 text-white font-extrabold rounded-full text-sm md:text-base tracking-wide shadow-lg transition-all duration-300 w-full sm:w-auto"
+                  className="group inline-flex items-center justify-between gap-6 pl-7 pr-3 py-3.5 bg-[#25D366] hover:bg-[#128C7E] active:scale-95 text-white font-extrabold rounded-full text-sm md:text-base tracking-wide shadow-lg transition-all duration-300 w-full sm:w-auto"
                   title="WhatsApp এ সরাসরি অর্ডার করুন"
                 >
                   <span>অর্ডার করুন (WhatsApp)</span>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#032014] group-hover:scale-105 transition-transform duration-300">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#25D366] group-hover:scale-105 transition-transform duration-300">
                     <svg
                       className="h-5 w-5 fill-current text-[#25D366]"
                       viewBox="0 0 24 24"

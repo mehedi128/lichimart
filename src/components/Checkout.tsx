@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { CartItem, Product, CheckoutDetails, Order } from '../types';
 import { 
   ArrowLeft, CheckCircle2, Ticket, Gift, Trash2, ShieldCheck, 
-  Search, Truck, Calendar, CreditCard, ChevronRight, Download, Package
+  Search, Truck, Calendar, CreditCard, ChevronRight, Download, Package, RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { getSheetsConfig, appendRowToGoogleSheet, sendOrderToWebhook, formatOrderRow } from '../sheetsService';
 
 // Custom SVG Logos for bKash, Nagad (Nogod) and Rocket
 const BkashLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
@@ -81,6 +82,7 @@ export default function Checkout({
 
   // Order state machine: 'idle' | 'processing' | 'confirmed'
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'processing' | 'confirmed'>('idle');
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'failed' | 'none'>('idle');
   const [processingStep, setProcessingStep] = useState('');
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
@@ -147,13 +149,67 @@ export default function Checkout({
     if (!validateForm()) return;
 
     setCheckoutStatus('processing');
+    setSyncStatus('idle');
+
+    const sheetsConfig = getSheetsConfig();
     
+    // Build final invoice early so we can sync it during processing screen
+    const invoiceId = `LM-${Math.floor(1000 + Math.random() * 9005)}-${Math.random().toString(36).substring(2, 4).toUpperCase()}`;
+    const newOrder: Order = {
+      orderId: invoiceId,
+      customer: {
+        fullName,
+        phone: customerPhone,
+        email: email || 'anonymous@lichimart.com',
+        address,
+        instructions,
+        deliveryDate,
+        deliveryTimeSlot,
+        billingMethod,
+        transactionIdOrPhone: ['bank', 'bkash', 'nagad', 'rocket'].includes(billingMethod) ? transactionIdOrPhone : undefined,
+        appliedPromo: promoDiscount > 0 ? promoCode : undefined,
+      },
+      items: [...cartItems],
+      subtotal,
+      shipping: shippingCharge,
+      discount: promoDiscount,
+      total,
+      placedAt: new Date().toLocaleString(),
+    };
+
+    // Trigger async sheet sync in parallel in the background!
+    const performSheetsSync = async () => {
+      if (sheetsConfig.syncMode === 'none') {
+        setSyncStatus('none');
+        return;
+      }
+      setSyncStatus('syncing');
+      try {
+        if (sheetsConfig.syncMode === 'webhook' && sheetsConfig.webhookUrl) {
+          await sendOrderToWebhook(sheetsConfig.webhookUrl, newOrder);
+          setSyncStatus('success');
+        } else if (sheetsConfig.syncMode === 'oauth' && sheetsConfig.spreadsheetId) {
+          const rowValues = formatOrderRow(newOrder);
+          await appendRowToGoogleSheet(sheetsConfig.spreadsheetId, sheetsConfig.sheetName, rowValues);
+          setSyncStatus('success');
+        } else {
+          setSyncStatus('none');
+        }
+      } catch (error) {
+        console.error('LichiMart Order Sync failed:', error);
+        setSyncStatus('failed');
+      }
+    };
+
+    performSheetsSync();
+
     // Animate simulated backend operations step-by-step
     const steps = [
       'Authenticating secured gateway interface session...',
       'Reserving elite tree-fresh lychees from Dinajpur orchards...',
       'Scheduling custom pluck harvest extraction at 4:30 AM...',
       'Assigning rapid express logistics agent courier...',
+      ...(sheetsConfig.syncMode !== 'none' ? ['সিঙ্ক্রোনাইজিং: গুগল শিটে অর্ডার রেকর্ড সংরক্ষণ করা হচ্ছে...'] : []),
       'Generating digital tax invoice ledger and receipt...'
     ];
 
@@ -166,36 +222,11 @@ export default function Checkout({
         setProcessingStep(steps[currentStepIndex]);
       } else {
         clearInterval(stepInterval);
-        
-        // Build final invoice
-        const invoiceId = `LM-${Math.floor(1000 + Math.random() * 9000)}-${Math.random().toString(36).substring(2, 4).toUpperCase()}`;
-        const newOrder: Order = {
-          orderId: invoiceId,
-          customer: {
-            fullName,
-            phone: customerPhone,
-            email: email || 'anonymous@lichimart.com',
-            address,
-            instructions,
-            deliveryDate,
-            deliveryTimeSlot,
-            billingMethod,
-            transactionIdOrPhone: ['bank', 'bkash', 'nagad', 'rocket'].includes(billingMethod) ? transactionIdOrPhone : undefined,
-            appliedPromo: promoDiscount > 0 ? promoCode : undefined,
-          },
-          items: [...cartItems],
-          subtotal,
-          shipping: shippingCharge,
-          discount: promoDiscount,
-          total,
-          placedAt: new Date().toLocaleString(),
-        };
-
         setCompletedOrder(newOrder);
         setCheckoutStatus('confirmed');
         onClearCart();
       }
-    }, 900);
+    }, 850);
   };
 
   // Generate and trigger download of ASCII formatted receipt
@@ -341,6 +372,26 @@ Website: https://www.facebook.com/lichimart
                 <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
                   <span className="text-gray-400 font-mono text-xs">Transaction ID / Phone:</span>
                   <span className="font-bold font-mono text-brand-lime text-xs">{o.customer.transactionIdOrPhone}</span>
+                </div>
+              )}
+              {syncStatus !== 'idle' && syncStatus !== 'none' && (
+                <div className="flex justify-between border-b border-brand-green-900 pb-1.5 align-middle">
+                  <span className="text-gray-400">গুগল শিট সিঙ্ক (গ্যারান্টি):</span>
+                  {syncStatus === 'syncing' && (
+                    <span className="font-bold text-yellow-400 flex items-center gap-1 animate-pulse">
+                      <RefreshCw className="h-3 w-3 animate-spin text-yellow-400" /> সিঙ্ক হচ্ছে...
+                    </span>
+                  )}
+                  {syncStatus === 'success' && (
+                    <span className="font-bold text-brand-lime flex items-center gap-1">
+                      <CheckCircle2 className="h-3.5 w-3.5 text-brand-lime" /> সিঙ্কড সফল! 📊✅
+                    </span>
+                  )}
+                  {syncStatus === 'failed' && (
+                    <span className="font-bold text-red-400 flex items-center gap-1" title="গুগল শিট সেটিংস পুনরায় চেক করুন।">
+                      ✖ সিঙ্ক স্থগিত (লোকাল ব্যাকআপ সংরক্ষিত)
+                    </span>
+                  )}
                 </div>
               )}
             </div>
