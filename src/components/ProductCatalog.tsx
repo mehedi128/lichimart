@@ -139,21 +139,23 @@ export default function ProductCatalog({
   // Quantities for each of our premium products (p1 and p2)
   const [quantities, setQuantities] = useState<Record<string, number>>({
     p1: 200,
-    p2: 200,
+    p2: 100,
   });
 
   // Success indicator for standard high-tactility UX response
   const [addedProduct, setAddedProduct] = useState<string | null>(null);
 
   const handleUpdateQty = (pId: string, delta: number) => {
+    const minQty = pId === 'p2' ? 100 : 200;
     setQuantities((prev) => ({
       ...prev,
-      [pId]: Math.max(200, (prev[pId] || 200) + delta),
+      [pId]: Math.max(minQty, (prev[pId] || minQty) + delta),
     }));
   };
 
   const handleTriggerAddToCart = (product: Product) => {
-    const qty = quantities[product.id] || 200;
+    const defaultQty = product.id === 'p2' ? 100 : 200;
+    const qty = quantities[product.id] || defaultQty;
     onAddToCart(product, qty);
     
     // Set a lively visual success feedback
@@ -426,10 +428,10 @@ export default function ProductCatalog({
                   {/* Price display with optional discount markup */}
                   <div className="flex items-baseline gap-3 bg-brand-green-950/60 px-4 py-2 rounded-xl border border-brand-green-850/60 w-fit">
                     <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold self-center mr-1">মূল্য:</span>
-                    <span className="font-heading text-2xl font-black text-brand-lime">৳{(china3.price * 200).toFixed(0)}</span>
-                    <span className="text-xs text-gray-405 font-sans">প্রতি 200 পিস</span>
+                    <span className="font-heading text-2xl font-black text-brand-lime">৳{(china3.price * 100).toFixed(0)}</span>
+                    <span className="text-xs text-gray-405 font-sans">প্রতি ১০০ পিস</span>
                     {china3.oldPrice && (
-                       <span className="font-sans text-sm text-gray-400 font-medium line-through ml-2">৳{(china3.oldPrice * 200).toFixed(0)}</span>
+                       <span className="font-sans text-sm text-gray-400 font-medium line-through ml-2">৳{(china3.oldPrice * 100).toFixed(0)}</span>
                     )}
                   </div>
 
@@ -447,7 +449,7 @@ export default function ProductCatalog({
                         className="flex items-center gap-2 rounded-xl bg-brand-lime/10 border border-brand-lime/20 p-3 text-xs text-brand-lime"
                       >
                         <Check className="h-4 w-4 shrink-0" />
-                        <span>চমৎকার পছন্দ! আপনার শপিং কার্টে {quantities[china3.id] || 200} পিস প্রিমিয়াম চায়না-৩ লিচু যুক্ত হয়েছে।</span>
+                        <span>চমৎকার পছন্দ! আপনার শপিং কার্টে {quantities[china3.id] || 100} পিস প্রিমিয়াম চায়না-৩ লিচু যুক্ত হয়েছে।</span>
                       </motion.div>
                     )}
                   </AnimatePresence>

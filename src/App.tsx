@@ -310,7 +310,7 @@ export default function App() {
                         {/* Add to Basket button direct */}
                         <button
                           onClick={() => {
-                            handleAddToCart(item, 200);
+                            handleAddToCart(item, item.id === 'p2' ? 100 : 200);
                             setIsWishlistOpen(false);
                             setIsCartOpen(true);
                           }}

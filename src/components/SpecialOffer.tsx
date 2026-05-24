@@ -72,39 +72,38 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
               <div className="space-y-4 w-full text-[#032014]">
                 <h2 className="font-heading text-3xl font-black md:text-5xl leading-tight tracking-tight">
                   কালবৈশাখী অফার: <br />
-                  <span className="text-[#a8142f] drop-shadow-sm">
-                    প্রিমিয়াম চায়না-৩
-                  </span> <br />
-                  এখন ১০% ছাড়ে!
+                  <span className="bg-[#032014] text-white px-4.5 py-2 rounded-2xl inline-block mt-2 mb-1 shadow-md border border-white/15">
+                    ১০০ পিস লিচু ফ্রি!  🎉
+                  </span>
                 </h2>
-                <p className="font-sans text-xs text-[#053220]/90 md:text-sm leading-relaxed max-w-xl font-medium">
-                  এই সপ্তাহে আমাদের বাগানের চায়না-৩ লিচুতে অসাধারণ মিষ্টির স্বাদ দেখা গেছে! মধুর মতো মিষ্টি, ছোট বীজযুক্ত এবং ঘন রসালো শাঁস। আমরা আমাদের প্রতি পিসের মূল্য <span className="line-through opacity-60">৳১৮.০০</span> থেকে কমিয়ে মাত্র <span className="text-[#a8142f] font-black underline decoration-2">৳১৫.০০</span> করেছি। অফারের সময় শেষ হওয়ার আগে আজই অর্ডার করুন!
+                <p className="font-sans text-sm text-[#053220]/90 md:text-base lg:text-[17px] leading-relaxed max-w-xl font-medium">
+                  এবার লিচুর মৌসুমে নিয়ে এলাম দারুণ চমক! মাত্র ১০০০ পিছ(মাদ্রাজি / বোম্বাই / বেদেনা / চায়না-৩) লিচু অর্ডার করলেই পাচ্ছেন <strong className="font-extrabold">অতিরিক্ত ১০০ পিছ লিচু একদম ফ্রি!</strong> অফারটি সীমিত সময়ের জন্য। আজই অর্ডার করুন এবং পরিবারসহ উপভোগ করুন দিনাজপুরের আসল স্বাদের লিচু!
                 </p>
               </div>
 
               {/* Countdown Blocks - Styled perfectly for readability on light-pink background */}
-              <div className="space-y-2">
-                <p className="text-[10px] font-bold text-[#053220]/70 uppercase tracking-widest font-mono">অফারের সময় বাকি আছে:</p>
-                <div className="flex items-center gap-2.5">
+              <div className="space-y-3">
+                <p className="text-xs md:text-sm font-extrabold text-[#053220]/90 uppercase tracking-wider font-mono">অফারের সময় বাকি আছে:</p>
+                <div className="flex items-center gap-3">
                   <div className="flex flex-col items-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/45 border border-white/70 font-heading text-base font-black text-[#032014] shadow-sm">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/60 border border-white font-heading text-lg md:text-xl font-black text-[#032014] shadow-sm">
                       {formatNum(timeLeft.hours)}
                     </div>
-                    <span className="mt-1 font-mono text-[9px] uppercase tracking-wider text-[#053220]/80 font-bold">ঘণ্টা</span>
+                    <span className="mt-2 font-sans text-[11px] md:text-xs uppercase tracking-wider text-[#053220]/90 font-bold">ঘণ্টা</span>
                   </div>
-                  <span className="text-sm font-bold text-[#032014]/60">:</span>
+                  <span className="text-xl font-bold text-[#032014]/60 mb-6">:</span>
                   <div className="flex flex-col items-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/45 border border-white/70 font-heading text-base font-black text-[#032014] shadow-sm">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-white/60 border border-white font-heading text-lg md:text-xl font-black text-[#032014] shadow-sm">
                       {formatNum(timeLeft.minutes)}
                     </div>
-                    <span className="mt-1 font-mono text-[9px] uppercase tracking-wider text-[#053220]/80 font-bold">মিনিট</span>
+                    <span className="mt-2 font-sans text-[11px] md:text-xs uppercase tracking-wider text-[#053220]/90 font-bold">মিনিট</span>
                   </div>
-                  <span className="text-sm font-bold text-[#032014]/60">:</span>
+                  <span className="text-xl font-bold text-[#032014]/60 mb-6">:</span>
                   <div className="flex flex-col items-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-500/20 border border-red-500/40 font-heading text-base font-black text-rose-800 shadow-sm animate-pulse">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-red-500/20 border border-red-500/40 font-heading text-lg md:text-xl font-black text-rose-850 shadow-sm animate-pulse">
                       {formatNum(timeLeft.seconds)}
                     </div>
-                    <span className="mt-1 font-mono text-[9px] uppercase tracking-wider text-rose-800 font-bold">সেকেন্ড</span>
+                    <span className="mt-2 font-sans text-[11px] md:text-xs uppercase tracking-wider text-rose-900 font-bold">সেকেন্ড</span>
                   </div>
                 </div>
               </div>
@@ -113,7 +112,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
               <div className="pt-2 w-full sm:w-auto">
                 <a
                   href={`https://wa.me/8801947970939?text=${encodeURIComponent(
-                    "আসসালামু আলাইকুম! আমি আপনাদের কালবৈশাখী স্পেশাল অফারের চমৎকার প্রিমিয়াম চায়না-৩ লিচু অর্ডার করতে চাই।"
+                    "আসসালামু আলাইকুম! আমি আপনাদের কালবৈশাখী স্পেশাল অফারটি (১০০০ পিস লিচু অর্ডারে ১০০ পিস লিচু ফ্রি) বুক করতে চাই।"
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

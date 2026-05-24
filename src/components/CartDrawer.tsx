@@ -140,9 +140,11 @@ export default function CartDrawer({
                           <h4 className="font-heading text-xs font-bold text-white line-clamp-1">
                             {item.product.name}
                           </h4>
-                          <div className="flex items-center gap-2">
+                           <div className="flex items-center gap-2">
                             <span className="text-[10px] text-gray-400 font-sans tracking-wide">📦 {item.product.weight}</span>
-                            <span className="text-[10px] font-mono text-brand-lime font-bold">৳{(item.product.price * 200).toFixed(0)} / 200 পিস</span>
+                            <span className="text-[10px] font-mono text-brand-lime font-bold">
+                              ৳{(item.product.price * (item.product.id === 'p2' ? 100 : 200)).toFixed(0)} / {item.product.id === 'p2' ? '১০০' : '২০০'} পিস
+                            </span>
                           </div>
                         </div>
 
@@ -150,7 +152,7 @@ export default function CartDrawer({
                         <div className="flex items-center justify-between pt-1">
                           <div className="flex items-center border border-brand-green-700 bg-brand-green-950 rounded-full h-7 px-1">
                             <button
-                              onClick={() => item.quantity > 200 ? onUpdateQty(item.product.id, item.quantity - 100) : onRemoveItem(item.product.id)}
+                              onClick={() => item.quantity > (item.product.id === 'p2' ? 100 : 200) ? onUpdateQty(item.product.id, item.quantity - 100) : onRemoveItem(item.product.id)}
                               className="h-5 w-5 rounded-full flex items-center justify-center text-xs text-gray-400 hover:text-white"
                             >
                               <Minus className="h-2.5 w-2.5" />
