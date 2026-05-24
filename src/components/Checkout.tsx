@@ -267,12 +267,6 @@ Address:      ${o.customer.address}
 Instructions: ${o.customer.instructions || 'N/A'}
 
 ----------------------------------------
-DELIVERY SCHEDULE
-----------------------------------------
-Requested Date: ${o.customer.deliveryDate}
-Requested Slot: ${o.customer.deliveryTimeSlot}
-
-----------------------------------------
 PURCHASED ITEMS
 ----------------------------------------
 | Product Name                 | Qty  | Price   | Subtotal   |
@@ -281,7 +275,6 @@ ${itemLines}
 ----------------------------------------
 Subtotal:                    ৳${o.subtotal.toFixed(2)}
 Express Delivery Charge:     ৳${o.shipping.toFixed(2)}
-Discount Deductions:         -৳${o.discount.toFixed(2)}
 ========================================
 GRAND TOTAL BILL:            ৳${o.total.toFixed(2)}
 ========================================

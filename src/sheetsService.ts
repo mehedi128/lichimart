@@ -135,9 +135,7 @@ export const formatOrderRow = (order: Order): any[] => {
     order.customer.transactionIdOrPhone || 'N/A',
     itemsText,
     `৳${order.subtotal.toFixed(0)}`,
-    order.customer.appliedPromo ? `${order.customer.appliedPromo} (-৳${order.discount.toFixed(0)})` : 'N/A',
     `৳${order.total.toFixed(0)}`,
-    order.customer.deliveryDate + ' ' + order.customer.deliveryTimeSlot,
     order.customer.instructions || 'N/A'
   ];
 };
@@ -152,9 +150,7 @@ export const SHEETS_HEADER = [
   'টানজেকশন আইডি / ফোন',
   'পণ্য তালিকা',
   'সাবটোটাল',
-  'কুপন ও ডিসকাউন্ট',
   'সর্বমোট বিল',
-  'ডেলিভারি সময়',
   'বিশেষ নির্দেশনা'
 ];
 
@@ -171,7 +167,7 @@ export const appendRowToGoogleSheet = async (
 
   // Ensure sheet headers exist or append
   try {
-    const range = `${sheetName}!A1:M1`;
+    const range = `${sheetName}!A1:K1`;
     // We check if the sheet is empty or has a header
     const checkRes = await fetch(
       `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`,
@@ -332,9 +328,7 @@ function doPost(e) {
       "টানজেকশন আইডি / ফোন",
       "পণ্য তালিকা",
       "সাবটোটাল",
-      "কুপন ও ডিসকাউন্ট",
       "সর্বমোট বিল",
-      "ডেলিভারি সময়",
       "বিশেষ নির্দেশনা"
     ];
     sheet.appendRow(headers);

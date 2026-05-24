@@ -6,7 +6,8 @@ import {
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   getSheetsConfig, saveSheetsConfig, googleSignIn, logout, initAuth, 
-  createNewSpreadsheet, getAppsScriptTemplate, SheetsConfig 
+  createNewSpreadsheet, getAppsScriptTemplate, SheetsConfig,
+  formatOrderRow, appendRowToGoogleSheet, sendOrderToWebhook
 } from '../sheetsService';
 import { User } from 'firebase/auth';
 
@@ -98,6 +99,85 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
       setMessage({ text: 'আপনার গুগল ড্রাইভে "LichiMart Lychee Orders" শিটটি তৈরি করা হয়েছে! 📊', type: 'success' });
     } catch (error: any) {
       setMessage({ text: 'শিট তৈরি করতে ব্যর্থ: ' + (error.message || 'Permissions error'), type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTestSync = async () => {
+    setLoading(true);
+    setMessage(null);
+    
+    // Create an elegant simulated order
+    const testOrder = {
+      orderId: `TEST-${Math.floor(1000 + Math.random() * 9000)}`,
+      customer: {
+        fullName: 'টেস্ট কাস্টমার (Test Customer)',
+        phone: '01711111111',
+        email: 'test@lichimart.com',
+        address: 'দিনাজপুর লিচু বাগান রোড, সদর',
+        instructions: 'গুগল শিট টেস্ট কানেকশন সফল হয়েছে!',
+        deliveryDate: '2026-05-25',
+        deliveryTimeSlot: 'বিকেল ৪:০০ - সন্ধ্যা ৬:০০টা',
+        billingMethod: 'bkash' as const,
+        transactionIdOrPhone: 'BKASH-TEST-999',
+      },
+      items: [
+        {
+          product: {
+            id: 'test-1',
+            name: 'টেস্ট দিনাজপুরী লিচু (মাদার গাছ)',
+            price: 3.5,
+            description: 'টেস্ট ডেসক্রিপশন',
+            image: '',
+            rating: 5,
+            reviewsCount: 1,
+            category: 'fresh' as const,
+            weight: '100 Pcs',
+            benefits: [],
+          },
+          quantity: 100,
+        }
+      ],
+      subtotal: 350,
+      shipping: 100,
+      discount: 0,
+      total: 450,
+      placedAt: new Date().toLocaleString(),
+    };
+
+    try {
+      if (config.syncMode === 'webhook') {
+        if (!config.webhookUrl.trim()) {
+          throw new Error('অনুগ্রহ করে আগে আপনার গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপ URL প্রদান করুন।');
+        }
+        if (!config.webhookUrl.includes('/exec')) {
+          throw new Error('আপনি সরাসরি এডিটর বা ভুল URL ব্যবহার করছেন। URL-এর শেষে অবশ্যই "/exec" থাকতে হবে।');
+        }
+        await sendOrderToWebhook(config.webhookUrl, testOrder);
+        setMessage({
+          text: 'অভিনন্দন! টেস্ট অর্ডারটি আপনার গুগল অ্যাপস স্ক্রিপ্টে পাঠানো হয়েছে। আপনার গুগল শিটটি চেক করে দেখুন নতুন রো যুক্ত হয়েছে কিনা! 📊🎉',
+          type: 'success'
+        });
+      } else if (config.syncMode === 'oauth') {
+        if (!config.spreadsheetId.trim()) {
+          throw new Error('অনুগ্রহ করে আগে গুগল স্প্রেডশিট আইডি প্রদান করুন বা এক ক্লিকে নতুন রো তৈরি করুন।');
+        }
+        const rowValues = formatOrderRow(testOrder);
+        await appendRowToGoogleSheet(config.spreadsheetId, config.sheetName, rowValues);
+        setMessage({
+          text: 'অভিনন্দন! টেস্ট রো আপনার গুগল ড্রাইভ স্প্রেডশিটে সফলভাবে যুক্ত হয়েছে! স্প্রেডশিট চেক করুন। 📊🎉',
+          type: 'success'
+        });
+      } else {
+        throw new Error('দয়া করে প্রথমে সিঙ্ক মোড হিসেবে "ওয়েবহুক সিঙ্ক" বা "গুগল ড্রাইভ সিঙ্ক" নির্বাচন করুন।');
+      }
+    } catch (error: any) {
+      console.error('Test Sync failed:', error);
+      setMessage({
+        text: 'টেস্ট কানেকশন ব্যর্থ হয়েছে: ' + (error.message || 'নেটওয়ার্ক এরর বা অ্যাপস স্ক্রিপ্ট পারমিশন সঠিক নয়।'),
+        type: 'error'
+      });
     } finally {
       setLoading(false);
     }
@@ -254,15 +334,26 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
                   <label className="text-xs font-semibold text-gray-300">
                     গুগল অ্যাপস স্ক্রিপ্ট ওয়েব অ্যাপ URL প্রদান করুন:
                   </label>
-                  <input
-                    type="url"
-                    value={config.webhookUrl}
-                    onChange={(e) => setConfig({ ...config, webhookUrl: e.target.value })}
-                    placeholder="https://script.google.com/macros/s/.../exec"
-                    className="w-full bg-brand-green-950 border border-brand-green-800 focus:border-brand-lime rounded-xl px-4 py-3 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors font-mono"
-                  />
-                  <p className="text-[10px] text-gray-450">
-                    আপনার গুগল শিটের অ্যাপস স্ক্রিপ্ট থেকে কপি করা <strong className="text-brand-lime">Web App URL</strong> টি এখানে পেস্ট করুন।
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      value={config.webhookUrl}
+                      onChange={(e) => setConfig({ ...config, webhookUrl: e.target.value })}
+                      placeholder="https://script.google.com/macros/s/.../exec"
+                      className="flex-grow bg-brand-green-950 border border-brand-green-800 focus:border-brand-lime rounded-xl px-4 py-3 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleTestSync}
+                      disabled={loading || !config.webhookUrl.trim()}
+                      className="px-4 py-3 text-xs bg-brand-green-800 hover:bg-brand-green-700 text-brand-lime font-bold rounded-xl border border-brand-green-700/60 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 shrink-0"
+                    >
+                      {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : null}
+                      <span>টেস্ট সিঙ্ক</span>
+                    </button>
+                  </div>
+                  <p className="text-[10px] text-gray-400">
+                    আপনার গুগল শিটের অ্যাপস স্ক্রিপ্ট থেকে কপি করা <strong className="text-brand-lime">Web App URL</strong> (যা শেষে <strong className="text-brand-lime">/exec</strong> দিয়ে শেষ হয়) টি এখানে পেস্ট করে পাশে <strong className="text-brand-lime">"টেস্ট সিঙ্ক"</strong> বাটনে ক্লিক করে পরীক্ষা করুন।
                   </p>
                 </div>
 
@@ -352,22 +443,16 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
                     <button
                       onClick={handleSignIn}
                       disabled={loading}
-                      style={{ height: '40px' }}
-                      className="gsi-material-button mx-auto hover:scale-102 transition cursor-pointer"
+                      className="flex items-center justify-center gap-3 bg-white hover:bg-gray-105 active:scale-98 text-gray-800 font-sans font-semibold text-sm py-2.5 px-5 rounded-2xl transition-all shadow-lg shadow-black/20 mx-auto cursor-pointer"
                     >
-                      <div className="gsi-material-button-state"></div>
-                      <div className="gsi-material-button-content-wrapper">
-                        <div className="gsi-material-button-icon">
-                          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" style={{ display: 'block' }}>
-                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-                            <path fill="none" d="M0 0h48v48H0z"></path>
-                          </svg>
-                        </div>
-                        <span className="gsi-material-button-contents font-sans" style={{ color: '#1f1f1f', fontWeight: 600 }}>Sign in with Google</span>
-                      </div>
+                      <svg className="h-4 w-4 shrink-0" viewBox="0 0 48 48">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
+                        <path fill="none" d="M0 0h48v48H0z"></path>
+                      </svg>
+                      <span>Sign in with Google</span>
                     </button>
                   </div>
                 ) : (
@@ -430,17 +515,32 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
                       </div>
 
                       {/* Tab Name Optional */}
-                      <div className="space-y-2">
-                        <label className="text-xs font-semibold text-gray-300">
-                          ট্যাব নাম (Sheet Tab Name):
-                        </label>
-                        <input
-                          type="text"
-                          value={config.sheetName}
-                          onChange={(e) => setConfig({ ...config, sheetName: e.target.value })}
-                          placeholder="Orders"
-                          className="w-full bg-brand-green-950 border border-brand-green-800 focus:border-brand-lime rounded-xl px-4 py-2.5 text-xs text-gray-200 outline-none transition-colors"
-                        />
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <label className="text-xs font-semibold text-gray-300">
+                            ট্যাব নাম (Sheet Tab Name):
+                          </label>
+                          <input
+                            type="text"
+                            value={config.sheetName}
+                            onChange={(e) => setConfig({ ...config, sheetName: e.target.value })}
+                            placeholder="Orders"
+                            className="w-full bg-brand-green-950 border border-brand-green-800 focus:border-brand-lime rounded-xl px-4 py-2.5 text-xs text-gray-200 outline-none transition-colors"
+                          />
+                        </div>
+
+                        {/* Test Button for OAuth */}
+                        <div className="flex justify-end pt-1">
+                          <button
+                            type="button"
+                            onClick={handleTestSync}
+                            disabled={loading || !config.spreadsheetId.trim()}
+                            className="px-4 py-2.5 text-xs bg-brand-green-800 hover:bg-brand-green-700 text-brand-lime font-bold rounded-xl border border-brand-green-700/60 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5"
+                          >
+                            {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : null}
+                            <span>স্প্রেডশিট টেস্ট সিঙ্ক</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
