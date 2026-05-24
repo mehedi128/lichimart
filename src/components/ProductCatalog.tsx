@@ -513,12 +513,12 @@ export default function ProductCatalog({
                     images={china3.images || [china3.image]}
                     productName={china3.name}
                     badge={
-                      <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5 rounded-full bg-red-650 px-3 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-md">
+                      <div className="absolute left-4 top-4 z-10 flex items-center gap-1.5 rounded-full bg-[#fe9a00] px-3 py-1 text-[10px] font-black text-white uppercase tracking-wider shadow-md">
                         <Clock className="h-3 w-3 text-white fill-none" />
                         <span>{china3.badge || "রাজকীয় লিচু"}</span>
                       </div>
                     }
-                    indicatorBgClass="bg-red-600/90 border border-red-500/50 text-white font-bold"
+                    indicatorBgClass="bg-[#071910] border border-brand-green-800/80 font-semibold text-brand-lime"
                   />
 
                   {/* Decorative background circle rings */}

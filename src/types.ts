@@ -50,10 +50,11 @@ export interface CheckoutDetails {
   instructions?: string;
   deliveryDate: string;
   deliveryTimeSlot: string; // e.g. "Morning (9 AM - 12 PM)" or "Afternoon"
-  billingMethod: 'cod' | 'card'; // cod = Cash on Delivery, card = Mock Card details
+  billingMethod: 'bank' | 'bkash' | 'nagad' | 'rocket'; // payment method
   cardNumber?: string;
   cardExpiry?: string;
   cardCVV?: string;
+  transactionIdOrPhone?: string;
   appliedPromo?: string;
 }
 

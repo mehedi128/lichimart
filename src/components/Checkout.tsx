@@ -6,6 +6,39 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+// Custom SVG Logos for bKash, Nagad (Nogod) and Rocket
+const BkashLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
+  <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" className={className} fill="none">
+    <path d="M174.4 46.4L37.1 154.6l37.8 14.5 174.5 69.8L174.4 46.4z" fill="#D12053"/>
+    <path d="M174.4 46.4l260.6 154.5-359.8-46.3 99.2-108.2z" fill="#E2136E"/>
+    <path d="M255.4 270.2L174.4 46.4l117.6 112 143.6 111.8-250.2.1z" fill="#E2136E"/>
+    <path d="M255.4 270.2l56.6 96.1 50-67.9L485.6 209l-230.2 61.2z" fill="#D12053"/>
+    <path d="M255.4 270.2l280.2-61.2v31.4l-75 51.1-205.2-21.3z" fill="#C00E4E"/>
+    <path d="M255.4 270.2L204.8 465.6l107.2-107.8-56.6-87.6z" fill="#E2136E"/>
+    <path d="M435.6 142.9L482.4 82l41.6 8.5-23.4 31.9-65 20.5z" fill="#D12053"/>
+  </svg>
+);
+
+const NagadLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M50,10 C65,10 80,18 88,32 C80,24 68,20 50,22 C32,24 20,35 15,50 C10,40 12,28 22,18 C30,10 40,10 50,10 Z" fill="#F04923" />
+    <path d="M88,32 C95,45 94,62 84,74 C86,58 80,44 68,36 C56,28 38,30 24,40 C34,30 48,26 62,28 C76,30 84,31 88,32 Z" fill="#F26522" />
+    <path d="M84,74 C74,86 58,92 42,88 C54,88 68,82 74,70 C80,58 76,40 64,28 C70,38 72,52 68,66 C64,80 54,84 42,88 Z" fill="#F6921E" />
+    <path d="M42,88 C26,84 14,72 10,54 C16,68 28,76 44,72 C60,68 68,50 66,32 C60,46 48,54 34,54 C20,54 12,44 10,54 Z" fill="#F04923" />
+    <circle cx="50" cy="52" r="14" fill="#E6E6E6" />
+    <path d="M48,58 L46,55 C46,54 48,50 51,50 C54,50 56,54 54,56 L52,58 Z" fill="#F04923" />
+    <circle cx="50" cy="46" r="3" fill="#F04923" />
+  </svg>
+);
+
+const RocketLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
+  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M15,50 L85,15 L55,85 L48,56 L15,50 Z" fill="#8C388C" />
+    <path d="M48,56 L85,15 L55,85 L48,56 Z" fill="#752275" />
+    <path d="M48,56 L72,25 L35,46 L48,56 Z" fill="#A84CA8" />
+  </svg>
+);
+
 interface CheckoutProps {
   cartItems: CartItem[];
   onClearCart: () => void;
@@ -40,10 +73,11 @@ export default function Checkout({
   const [deliveryTimeSlot, setDeliveryTimeSlot] = useState('Morning (8:30 AM - 12:00 PM)');
 
   // Billing and Card
-  const [billingMethod, setBillingMethod] = useState<'cod' | 'card'>('cod');
+  const [billingMethod, setBillingMethod] = useState<'bank' | 'bkash' | 'nagad' | 'rocket'>('bkash');
   const [cardNumber, setCardNumber] = useState('');
   const [cardExpiry, setCardExpiry] = useState('');
   const [cardCVV, setCardCVV] = useState('');
+  const [transactionIdOrPhone, setTransactionIdOrPhone] = useState('');
 
   // Order state machine: 'idle' | 'processing' | 'confirmed'
   const [checkoutStatus, setCheckoutStatus] = useState<'idle' | 'processing' | 'confirmed'>('idle');
@@ -96,12 +130,9 @@ export default function Checkout({
     }
 
     if (!address.trim()) errors.address = 'Please specify your physical shipping address';
-    if (!deliveryDate) errors.deliveryDate = 'Please select a delivery date';
 
-    if (billingMethod === 'card') {
-      if (!cardNumber.trim()) errors.cardNumber = 'Card number is required';
-      if (!cardExpiry.trim()) errors.cardExpiry = 'Expiry date is required';
-      if (!cardCVV.trim()) errors.cardCVV = 'CVV code is required';
+    if (!transactionIdOrPhone.trim()) {
+      errors.transactionIdOrPhone = 'Transaction ID or sender phone number is required';
     }
 
     setFormErrors(errors);
@@ -147,6 +178,7 @@ export default function Checkout({
             deliveryDate,
             deliveryTimeSlot,
             billingMethod,
+            transactionIdOrPhone: ['bank', 'bkash', 'nagad', 'rocket'].includes(billingMethod) ? transactionIdOrPhone : undefined,
             appliedPromo: promoDiscount > 0 ? promoCode : undefined,
           },
           items: [...cartItems],
@@ -174,14 +206,24 @@ export default function Checkout({
       return `| ${item.product.name.padEnd(28)} | ${item.quantity.toString().padEnd(4)} | ৳${item.product.price.toFixed(2).padEnd(6)} | ৳${itemSub.toFixed(2).padEnd(8)} |`;
     }).join('\n');
 
+    const paymentMethodLabel = 
+      o.customer.billingMethod === 'bkash' ? 'bKash (বিকাশ)' :
+      o.customer.billingMethod === 'nagad' ? 'Nagad (নগদ)' :
+      o.customer.billingMethod === 'rocket' ? 'Rocket (রকেট)' :
+      'Bank Transfer';
+
+    const transactionLine = o.customer.transactionIdOrPhone 
+      ? `Transaction ID/Phone: ${o.customer.transactionIdOrPhone}` 
+      : '';
+
     const receiptContent = `
 ========================================
              LICHIMART INVOICE          
 ========================================
 Order ID:     ${o.orderId}
 Placed At:    ${o.placedAt}
-Status:       CONFIRMED / PAID via COD
-
+Status:       CONFIRMED / Mode: ${paymentMethodLabel}
+${transactionLine ? `${transactionLine}\n` : ''}
 ----------------------------------------
 CUSTOMER DETAILS
 ----------------------------------------
@@ -291,9 +333,18 @@ Website: https://www.facebook.com/lichimart
               <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
                 <span className="text-gray-400">Payment Method Status:</span>
                 <span className="font-bold text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded tracking-wide font-mono">
-                  {o.customer.billingMethod === 'cod' ? 'Cash on Delivery (COD)' : 'Mock Card Gateway'}
+                  {o.customer.billingMethod === 'bkash' && 'bKash (বিকাশ) - Paid'}
+                  {o.customer.billingMethod === 'nagad' && 'Nagad (নগদ) - Paid'}
+                  {o.customer.billingMethod === 'rocket' && 'Rocket (রকেট) - Paid'}
+                  {o.customer.billingMethod === 'bank' && 'Bank Transfer - Paid'}
                 </span>
               </div>
+              {o.customer.transactionIdOrPhone && (
+                <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
+                  <span className="text-gray-400 font-mono text-xs">Transaction ID / Phone:</span>
+                  <span className="font-bold font-mono text-brand-lime text-xs">{o.customer.transactionIdOrPhone}</span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -465,39 +516,7 @@ Website: https://www.facebook.com/lichimart
                 <p className="mt-1 text-[11px] text-red-400 font-medium">{formErrors.address}</p>
               )}
             </div>
-                            {/* Date Picker & Time slot Picker */}
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div>
-                <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-1.5 font-mono">
-                  Requested Delivery Date <strong className="text-red-500">*</strong>
-                </label>
-                <div className="relative">
-                  <input
-                    type="date"
-                    min={tomorrowFormatted}
-                    value={deliveryDate}
-                    onChange={(e) => setDeliveryDate(e.target.value)}
-                    className="w-full rounded-lg border border-brand-green-700 bg-brand-green-950 px-4 py-3 text-xs text-white focus:border-[#FFA0B4] focus:outline-none transition pl-10"
-                  />
-                  <Calendar className="absolute left-3.5 top-3.5 h-3.5 w-3.5 text-gray-400" />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide mb-1.5 font-mono">
-                  Delivery Time Slot
-                </label>
-                <select
-                  value={deliveryTimeSlot}
-                  onChange={(e) => setDeliveryTimeSlot(e.target.value)}
-                  className="w-full rounded-lg border border-brand-green-700 bg-brand-green-950 px-4 py-3 text-xs text-white focus:border-[#FFA0B4] focus:outline-none transition appearance-none"
-                >
-                  <option value="Morning (8:30 AM - 12:00 PM)">☀️ Morning (8:30 AM - 12:00 PM)</option>
-                  <option value="Afternoon (1:30 PM - 5:00 PM)">⛅ Afternoon (1:30 PM - 5:00 PM)</option>
-                  <option value="Evening (6:00 PM - 9:00 PM)">🌙 Evening (6:00 PM - 9:00 PM)</option>
-                </select>
-              </div>
-            </div>
+                
 
             {/* Input Row 4 - Speical Instructions */}
             <div>
@@ -515,110 +534,187 @@ Website: https://www.facebook.com/lichimart
             </div>
 
             {/* Billing Selection Toggle Grid */}
-            <div className="space-y-3">
-              <label className="block text-xs font-bold text-gray-300 uppercase tracking-wide font-mono">
-                Billing & Payment Mode
+            <div className="space-y-4">
+              <label className="block text-xs font-bold text-[#FFA0B4] sm:text-gray-300 uppercase tracking-wide font-mono">
+                Select Payment Method / পেমেন্ট মাধ্যম নির্বাচন করুন <strong className="text-red-500">*</strong>
               </label>
-              <div className="grid gap-3 sm:grid-cols-2">
-                
-                {/* Option 1: Cash on Delivery */}
-                <div 
-                  onClick={() => setBillingMethod('cod')}
-                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer select-none transition ${
-                    billingMethod === 'cod' 
-                      ? 'border-[#FFA0B4] bg-[#FFA0B4]/5' 
-                      : 'border-brand-green-800 bg-brand-green-950/20 hover:border-brand-green-750'
+              
+              <div className="grid gap-3 grid-cols-2 sm:grid-cols-4">
+                {/* bKash card */}
+                <div
+                  id="pay-bkash"
+                  onClick={() => {
+                    setFormErrors(prev => {
+                      const copy = { ...prev };
+                      delete copy.transactionIdOrPhone;
+                      return copy;
+                    });
+                    setBillingMethod('bkash');
+                  }}
+                  className={`relative flex flex-col items-center justify-center p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 ${
+                    billingMethod === 'bkash'
+                      ? 'border-[#E2136E] bg-[#E2136E]/10 ring-1 ring-[#E2136E]/50 shadow-[0_0_15px_rgba(226,19,110,0.15)] scale-[1.02]'
+                      : 'border-brand-green-800 bg-brand-green-950/40 hover:border-[#E2136E]/40 hover:bg-brand-green-950/70'
                   }`}
                 >
-                  <div className="mt-0.5 min-w-4 flex items-center justify-center">
-                    {billingMethod === 'cod' ? (
-                      <div className="h-4 w-4 rounded-full border-4 border-[#FFA0B4] bg-transparent" />
-                    ) : (
-                      <div className="h-4 w-4 rounded-full border border-gray-500 bg-transparent" />
-                    )}
+                  <div className="w-12 h-12 flex items-center justify-center bg-white rounded-full p-2 shadow-md mb-2.5 transition-transform duration-300 hover:scale-110">
+                    <BkashLogo className="w-full h-full object-contain" />
                   </div>
-                  <div className="text-left">
-                    <h4 className="text-xs font-bold text-white">Cash on Delivery (COD)</h4>
-                    <p className="text-[10px] text-gray-400 mt-1">Pay with physical currency to our logistics officer when your lychees arrive at your door.</p>
-                  </div>
+                  <span className="text-xs font-extrabold text-white tracking-wide font-sans text-center">bKash</span>
+                  <span className="text-[10px] font-bold text-gray-400 font-sans text-center mt-0.5">বিকাশ</span>
+                  {billingMethod === 'bkash' && (
+                    <div className="absolute top-1.5 right-1.5 bg-[#E2136E] text-white rounded-full p-0.5 shadow-sm">
+                      <CheckCircle2 className="w-3.5 h-3.5 fill-[#E2136E] text-white stroke-2" />
+                    </div>
+                  )}
                 </div>
 
-                {/* Option 2: Mock Card Gateway */}
-                <div 
-                  onClick={() => setBillingMethod('card')}
-                  className={`flex items-start gap-3 p-4 rounded-xl border cursor-pointer select-none transition ${
-                    billingMethod === 'card' 
-                      ? 'border-[#FFA0B4] bg-[#FFA0B4]/5' 
-                      : 'border-brand-green-800 bg-brand-green-950/20 hover:border-brand-green-750'
+                {/* Nagad card */}
+                <div
+                  id="pay-nagad"
+                  onClick={() => {
+                    setFormErrors(prev => {
+                      const copy = { ...prev };
+                      delete copy.transactionIdOrPhone;
+                      return copy;
+                    });
+                    setBillingMethod('nagad');
+                  }}
+                  className={`relative flex flex-col items-center justify-center p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 ${
+                    billingMethod === 'nagad'
+                      ? 'border-[#FA541C] bg-[#FA541C]/10 ring-1 ring-[#FA541C]/50 shadow-[0_0_15px_rgba(250,84,28,0.15)] scale-[1.02]'
+                      : 'border-brand-green-800 bg-brand-green-950/40 hover:border-[#FA541C]/40 hover:bg-brand-green-950/70'
                   }`}
                 >
-                  <div className="mt-0.5 min-w-4 flex items-center justify-center">
-                    {billingMethod === 'card' ? (
-                      <div className="h-4 w-4 rounded-full border-4 border-[#FFA0B4] bg-transparent" />
-                    ) : (
-                      <div className="h-4 w-4 rounded-full border border-gray-500 bg-transparent" />
-                    )}
+                  <div className="w-12 h-12 flex items-center justify-center bg-white rounded-full p-2 shadow-md mb-2.5 transition-transform duration-300 hover:scale-110">
+                    <NagadLogo className="w-full h-full object-contain" />
                   </div>
-                  <div className="text-left">
-                    <h4 className="text-xs font-bold text-white">Mock Card Gateway</h4>
-                    <p className="text-[10px] text-gray-400 mt-1">Simulate secure card transaction right here. Enter mock numbers to test order invoice flow.</p>
-                  </div>
+                  <span className="text-xs font-extrabold text-white tracking-wide font-sans text-center">Nagad</span>
+                  <span className="text-[10px] font-bold text-gray-400 font-sans text-center mt-0.5">নগদ</span>
+                  {billingMethod === 'nagad' && (
+                    <div className="absolute top-1.5 right-1.5 bg-[#FA541C] text-white rounded-full p-0.5 shadow-sm">
+                      <CheckCircle2 className="w-3.5 h-3.5 fill-[#FA541C] text-white stroke-2" />
+                    </div>
+                  )}
                 </div>
 
+                {/* Rocket card */}
+                <div
+                  id="pay-rocket"
+                  onClick={() => {
+                    setFormErrors(prev => {
+                      const copy = { ...prev };
+                      delete copy.transactionIdOrPhone;
+                      return copy;
+                    });
+                    setBillingMethod('rocket');
+                  }}
+                  className={`relative flex flex-col items-center justify-center p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 ${
+                    billingMethod === 'rocket'
+                      ? 'border-[#8C388C] bg-[#8C388C]/15 ring-1 ring-[#8C388C]/50 shadow-[0_0_15px_rgba(140,56,140,0.15)] scale-[1.02]'
+                      : 'border-brand-green-800 bg-brand-green-950/40 hover:border-[#8C388C]/40 hover:bg-brand-green-950/70'
+                  }`}
+                >
+                  <div className="w-12 h-12 flex items-center justify-center bg-white rounded-full p-2 shadow-md mb-2.5 transition-transform duration-300 hover:scale-110">
+                    <RocketLogo className="w-full h-full object-contain" />
+                  </div>
+                  <span className="text-xs font-extrabold text-white tracking-wide font-sans text-center">Rocket</span>
+                  <span className="text-[10px] font-bold text-gray-400 font-sans text-center mt-0.5">রকেট</span>
+                  {billingMethod === 'rocket' && (
+                    <div className="absolute top-1.5 right-1.5 bg-[#8C388C] text-white rounded-full p-0.5 shadow-sm">
+                      <CheckCircle2 className="w-3.5 h-3.5 fill-[#8C388C] text-white stroke-2" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Bank Card (Transfer) */}
+                <div
+                  id="pay-bank"
+                  onClick={() => {
+                    setFormErrors(prev => {
+                      const copy = { ...prev };
+                      delete copy.transactionIdOrPhone;
+                      return copy;
+                    });
+                    setBillingMethod('bank');
+                  }}
+                  className={`relative flex flex-col items-center justify-center p-4 rounded-xl border cursor-pointer select-none transition-all duration-300 ${
+                    billingMethod === 'bank'
+                      ? 'border-brand-lime bg-brand-lime/10 ring-1 ring-brand-lime/50 shadow-[0_0_15px_rgba(164,220,110,0.15)] scale-[1.02]'
+                      : 'border-brand-green-800 bg-brand-green-950/40 hover:border-brand-lime/40 hover:bg-brand-green-950/70'
+                  }`}
+                >
+                  <div className="w-12 h-12 flex items-center justify-center bg-brand-green-900 rounded-full border border-brand-green-700 p-2 shadow-md mb-2.5 transition-transform duration-300 hover:scale-110 text-brand-lime">
+                    <span className="text-2xl md:text-3xl">🏛️</span>
+                  </div>
+                  <span className="text-xs font-extrabold text-white tracking-wide font-sans text-center">Bank Pay</span>
+                  <span className="text-[10px] font-bold text-gray-400 font-sans text-center mt-0.5">ব্যাংক ট্রান্সফার</span>
+                  {billingMethod === 'bank' && (
+                    <div className="absolute top-1.5 right-1.5 bg-brand-lime text-brand-green-950 rounded-full p-0.5 shadow-sm">
+                      <CheckCircle2 className="w-3.5 h-3.5 fill-brand-lime text-brand-green-950 stroke-2" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
-            {/* Conditional card input form fields */}
+            {/* Conditional Mobile Financial Service (MFS) / Bank Instructions & Input */}
             <AnimatePresence>
-              {billingMethod === 'card' && (
+              {['bkash', 'nagad', 'rocket', 'bank'].includes(billingMethod) && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="rounded-xl border border-brand-green-800 bg-brand-green-950/80 p-4 space-y-4 overflow-hidden"
+                  className="rounded-xl border border-brand-green-800 bg-brand-green-950/85 p-4 space-y-4 overflow-hidden"
                 >
-                  <div>
-                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-mono">Mock Credit Card Number</label>
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="4111 8888 9999 1111"
-                        value={cardNumber}
-                        onChange={(e) => setCardNumber(e.target.value)}
-                        className={`w-full rounded-lg border bg-brand-green-900/40 px-4 py-2.5 text-xs text-white focus:outline-none pl-10 ${
-                          formErrors.cardNumber ? 'border-red-500' : 'border-brand-green-700 focus:border-brand-lime'
-                        }`}
-                      />
-                      <CreditCard className="absolute left-3.5 top-3.5 h-3.5 w-3.5 text-gray-400" />
-                    </div>
+                  {/* Quick Payment Details helper box */}
+                  <div className="rounded-lg bg-brand-green-900/40 p-3.5 text-xs sm:text-sm text-gray-200 leading-relaxed space-y-2 border border-brand-green-800/50">
+                    <p className="font-extrabold text-white text-sm sm:text-base">
+                      {billingMethod === 'bkash' && 'bKash Payment Guide (বিকাশ গাইড)'}
+                      {billingMethod === 'nagad' && 'Nagad Payment Guide (নগদ গাইড)'}
+                      {billingMethod === 'rocket' && 'Rocket Payment Guide (রকেট গাইড)'}
+                      {billingMethod === 'bank' && 'Bank Transfer Guide (ব্যাংক গাইড)'}
+                    </p>
+                    
+                    {billingMethod === 'bkash' && (
+                      <p>দয়া করে এই বিকাশ নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base">01700-000000 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
+                    )}
+                    {billingMethod === 'nagad' && (
+                      <p>দয়া করে এই নগদ নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base">01700-000000 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
+                    )}
+                    {billingMethod === 'rocket' && (
+                      <p>দয়া করে এই রকেট নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base">01700-000000-0 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
+                    )}
+                    {billingMethod === 'bank' && (
+                      <div className="space-y-1.5 font-sans">
+                        <p>Please transfer the total bill to the following Bank Account:</p>
+                        <ul className="list-disc pl-5 space-y-1 font-mono text-xs sm:text-sm text-brand-lime font-bold">
+                          <li>Bank Name: Dutch-Bangla Bank PLC</li>
+                          <li>Account Name: LichiMart Premium</li>
+                          <li>Account Number: 145.120.98547</li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-mono">Expiry MM/YY</label>
-                      <input
-                        type="text"
-                        placeholder="12/28"
-                        value={cardExpiry}
-                        onChange={(e) => setCardExpiry(e.target.value)}
-                        className={`w-full rounded-lg border bg-brand-green-900/40 px-4 py-2.5 text-xs text-white focus:outline-none ${
-                          formErrors.cardExpiry ? 'border-red-500' : 'border-brand-green-700'
-                        }`}
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-mono">CVV Security Code</label>
-                      <input
-                        type="password"
-                        placeholder="***"
-                        maxLength={4}
-                        value={cardCVV}
-                        onChange={(e) => setCardCVV(e.target.value)}
-                        className={`w-full rounded-lg border bg-brand-green-900/40 px-4 py-2.5 text-xs text-white focus:outline-none ${
-                          formErrors.cardCVV ? 'border-red-500' : 'border-brand-green-700'
-                        }`}
-                      />
-                    </div>
+                  {/* Transaction ID or phone field */}
+                  <div>
+                    <label htmlFor="txInput" className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1 font-mono">
+                      Your Transaction ID or phone number <strong className="text-red-500">*</strong>
+                    </label>
+                    <input
+                      id="txInput"
+                      type="text"
+                      placeholder="e.g., TRX9823423 or 017XXXXXXXX"
+                      value={transactionIdOrPhone}
+                      onChange={(e) => setTransactionIdOrPhone(e.target.value)}
+                      className={`w-full rounded-lg border bg-brand-green-950 px-4 py-2.5 text-xs text-white focus:outline-none focus:ring-1 focus:ring-brand-lime/30 ${
+                        formErrors.transactionIdOrPhone ? 'border-red-500' : 'border-brand-green-700'
+                      }`}
+                    />
+                    {formErrors.transactionIdOrPhone && (
+                      <p className="mt-1 text-[11px] text-red-400 font-semibold">{formErrors.transactionIdOrPhone}</p>
+                    )}
                   </div>
                 </motion.div>
               )}
