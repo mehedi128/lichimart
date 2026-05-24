@@ -677,21 +677,23 @@ Website: https://www.facebook.com/lichimart
                     </p>
                     
                     {billingMethod === 'bkash' && (
-                      <p>দয়া করে এই বিকাশ নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base">01700-000000 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
+                      <p>দয়া করে এই বিকাশ নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base font-extrabold underline decoration-dashed decoration-brand-lime/50 mb-1">01947970939 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
                     )}
                     {billingMethod === 'nagad' && (
-                      <p>দয়া করে এই নগদ নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base">01700-000000 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
+                      <p>দয়া করে এই নগদ নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base font-extrabold underline decoration-dashed decoration-brand-lime/50 mb-1">01947970939 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
                     )}
                     {billingMethod === 'rocket' && (
-                      <p>দয়া করে এই রকেট নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base">01700-000000-0 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
+                      <p>দয়া করে এই রকেট নম্বরে সেন্ড মানি করুন: <strong className="text-brand-lime font-mono text-sm sm:text-base font-extrabold underline decoration-dashed decoration-brand-lime/50 mb-1">01947970939 (Personal)</strong> এবং নিচে আপনার ট্রানজেকশন আইডি অথবা যে নম্বর থেকে পাঠিয়েছেন তা লিখুন।</p>
                     )}
                     {billingMethod === 'bank' && (
                       <div className="space-y-1.5 font-sans">
                         <p>Please transfer the total bill to the following Bank Account:</p>
                         <ul className="list-disc pl-5 space-y-1 font-mono text-xs sm:text-sm text-brand-lime font-bold">
-                          <li>Bank Name: Dutch-Bangla Bank PLC</li>
-                          <li>Account Name: LichiMart Premium</li>
-                          <li>Account Number: 145.120.98547</li>
+                          <li>Bank Name: The City Bank Limited</li>
+                          <li>Account Name: MD. MEHEDI HASAN</li>
+                          <li>Account Number: 2104118949001</li>
+                          <li>Branch Name: GAZIPUR BRANCH</li>
+                          <li>District Name: 225330526</li>
                         </ul>
                       </div>
                     )}
