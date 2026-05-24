@@ -125,8 +125,10 @@ export default function Checkout({
     
     if (!customerPhone.trim()) {
       errors.phone = 'Please enter your contact phone number';
-    } else if (customerPhone.length < 8) {
-      errors.phone = 'The phone number provided is too short';
+    } else if (!/^\d+$/.test(customerPhone)) {
+      errors.phone = 'Phone number must be numeric (only numbers are allowed)';
+    } else if (customerPhone.length < 11) {
+      errors.phone = 'Phone number must be at least 11 digits';
     }
 
     if (!address.trim()) errors.address = 'Please specify your physical shipping address';
@@ -303,7 +305,7 @@ Website: https://www.facebook.com/lichimart
             <p className="font-sans text-xs text-brand-lime">Your fresh lychee harvest schedule is registered in our records.</p>
           </div>
           <p className="font-sans text-xs text-gray-300 max-w-lg mx-auto">
-            Thank you, <strong className="text-white">{o.customer.fullName}</strong>. We have dispatched a purchase confirmation email to <strong className="text-white">{o.customer.email}</strong>. Our logistics manager will ring your contact <strong className="text-brand-lime">{o.customer.phone}</strong> shortly to align the exact delivery coordinate dispatch.
+            Thank you, <strong className="text-white">{o.customer.fullName}</strong>. Our logistics manager will ring your contact <strong className="text-brand-lime">{o.customer.phone}</strong> shortly to align the exact delivery coordinate dispatch.
           </p>
         </div>
 
@@ -321,10 +323,6 @@ Website: https://www.facebook.com/lichimart
               <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
                 <span className="text-gray-400">Requested Harvest Date:</span>
                 <span className="font-bold text-white">{o.customer.deliveryDate}</span>
-              </div>
-              <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
-                <span className="text-gray-400">Preferred Time Slot:</span>
-                <span className="font-bold text-white">{o.customer.deliveryTimeSlot}</span>
               </div>
               <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
                 <span className="text-gray-400">Shipping Location:</span>
@@ -468,9 +466,9 @@ Website: https://www.facebook.com/lichimart
                 <input
                   id="phInput"
                   type="tel"
-                  placeholder="e.g., +1 (555) 019-2834"
+                  placeholder="e.g., 01947970939"
                   value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
+                  onChange={(e) => setCustomerPhone(e.target.value.replace(/\D/g, ''))}
                   className={`w-full rounded-lg border bg-brand-green-950 px-4 py-3 text-xs text-white placeholder-gray-500 focus:outline-none transition ${
                     formErrors.phone ? 'border-red-500 focus:border-red-500' : 'border-brand-green-700 focus:border-[#FFA0B4]'
                   }`}
@@ -764,43 +762,6 @@ Website: https://www.facebook.com/lichimart
               ))}
             </div>
 
-            {/* Coupon Promo Field */}
-            <form onSubmit={handleApplyPromo} className="border-t border-brand-green-900 pt-4">
-              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest font-mono mb-1.5">Apply Promo Code</label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="e.g., LICHIMART10"
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  disabled={promoDiscount > 0}
-                  className="flex-1 rounded-lg border border-brand-green-700 bg-brand-green-900/40 px-3 py-2 text-xs text-white placeholder-gray-500 focus:border-brand-lime focus:outline-none uppercase"
-                />
-                {promoDiscount > 0 ? (
-                  <button
-                    type="button"
-                    onClick={handleRemovePromo}
-                    className="rounded-lg bg-red-600/10 border border-red-500 text-red-400 hover:bg-red-500 hover:text-white px-3.5 text-xs font-semibold transition"
-                  >
-                    Remove
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="rounded-lg bg-brand-lime hover:bg-brand-lime-hover text-brand-green-950 font-bold px-4 text-xs transition cursor-pointer"
-                  >
-                    Apply
-                  </button>
-                )}
-              </div>
-              {promoError && (
-                <p className="mt-1 text-[11px] text-rose-400 font-semibold">{promoError}</p>
-              )}
-              {promoSuccess && (
-                <p className="mt-1 text-[11px] text-brand-lime font-bold">{promoSuccess}</p>
-              )}
-            </form>
-
             {/* Direct pricing details */}
             <div className="border-t border-brand-green-900 pt-4 space-y-2 border-b pb-4 text-xs">
               <div className="flex items-center justify-between text-gray-400">
@@ -840,7 +801,7 @@ Website: https://www.facebook.com/lichimart
             <ShieldCheck className="h-8 w-8 text-[#FFA0B4] shrink-0" />
             <div>
               <h5 className="text-xs font-bold text-white uppercase font-heading leading-tight">100% Secure Farm Gateways</h5>
-              <p className="text-[10px] text-gray-400">Your information is protected by industry standard SSL. We do not store mock debit credentials.</p>
+              <p className="text-[10px] text-gray-400">We do not store mock debit credentials.</p>
             </div>
           </div>
         </div>

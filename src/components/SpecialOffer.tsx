@@ -37,11 +37,37 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
 
   return (
     <section id="deal" className="relative scroll-mt-12 bg-brand-green-950 border-b border-brand-green-900/60 py-16 md:py-24 overflow-hidden px-4">
-      {/* Decorative gradient orb */}
-      <div className="absolute right-[-10%] top-[-10%] -z-10 h-96 w-96 rounded-full bg-brand-lime/10 blur-[130px]" />
-      <div className="absolute left-[-5%] bottom-[-5%] -z-10 h-80 w-80 rounded-full bg-brand-green-800/20 blur-[110px]" />
+      {/* Decorative concentric circular ambient background inspired by the design (with high contrast lichi theme colors) */}
+      <div className="absolute right-[-250px] md:right-[-350px] top-1/2 -translate-y-1/2 z-0 w-[1000px] h-[1000px] md:w-[1300px] md:h-[1300px] select-none pointer-events-none flex items-center justify-center">
+        {/* Layer 5 (Outermost visible wave/band) */}
+        <div className="absolute w-[100%] h-[100%] rounded-full bg-brand-lime/[0.01] border border-brand-lime/[0.04] flex items-center justify-center">
+          {/* Layer 4 */}
+          <div className="absolute w-[82%] h-[82%] rounded-full bg-brand-lime/[0.02] border border-brand-lime/[0.07] flex items-center justify-center">
+            {/* Layer 3 */}
+            <div className="absolute w-[66%] h-[66%] rounded-full bg-brand-lime/[0.04] border border-brand-lime/[0.12] flex items-center justify-center">
+              {/* Layer 2 */}
+              <div className="absolute w-[50%] h-[50%] rounded-full bg-brand-lime/[0.07] border border-brand-lime/[0.18] flex items-center justify-center">
+                {/* Layer 1 */}
+                <div className="absolute w-[36%] h-[36%] rounded-full bg-brand-lime/[0.12] border border-brand-lime/[0.25] flex items-center justify-center">
+                  {/* Lime Blend 2 */}
+                  <div className="absolute w-[24%] h-[24%] rounded-full bg-brand-lime/[0.2] border border-brand-lime/[0.35] shadow-[0_0_80px_rgba(255,160,180,0.2)] flex items-center justify-center">
+                    {/* Lime Blend 1 - Bright Wave */}
+                    <div className="absolute w-[14%] h-[14%] rounded-full bg-brand-lime/[0.3] border border-brand-lime/[0.5] shadow-[0_0_100px_rgba(255,160,180,0.4)] flex items-center justify-center">
+                      {/* Core Glowing White/Lichi Orb */}
+                      <div className="absolute w-[6%] h-[6%] rounded-full bg-white border border-brand-lime/60 shadow-[0_0_120px_rgba(255,160,180,0.8)]" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div className="mx-auto max-w-7xl">
+      {/* Deep soft green glow source behind content */}
+      <div className="absolute left-[-5%] bottom-[-5%] z-0 h-80 w-80 rounded-full bg-brand-green-800/20 blur-[110px]" />
+
+      <div className="mx-auto max-w-7xl relative z-10">
         <div className="grid items-center gap-12 lg:grid-cols-12 text-center lg:text-left">
           
           {/* Column 1: Promo Texts & Timer */}
@@ -59,7 +85,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
                 এখন ১০% ছাড়ে!
               </h2>
               <p className="font-sans text-xs text-gray-300 md:text-sm leading-relaxed max-w-xl mx-auto lg:mx-0">
-                এই সপ্তাহে আমাদের বাগানের চায়না-৩ লিচুতে অসাধারণ মিষ্টির স্বাদ দেখা গেছে! মধুর মতো মিষ্টি, ছোট বীজযুক্ত এবং ঘন রসালো শাঁস। আমরা আমাদের প্রতি পিসের মূল্য <span className="line-through text-gray-405">৳১৮.০০</span> থেকে কমিয়ে মাত্র <strong className="text-brand-lime">৳১৫.০০</strong> করেছি। অফারের সময় শেষ হওয়ার আগে আজই অর্ডার করুন!
+                এই সপ্তাহে আমাদের বাগানের চায়না-৩ লিচুতে অসাধারণ মিষ্টির স্বাদ দেখা গেছে! মধুর মতো মিষ্টি, ছোট বীজযুক্ত এবং ঘন রসালো শাঁস। আমরা আমাদের প্রতি পিসের মূল্য <span className="line-through text-gray-400">৳১৮.০০</span> থেকে কমিয়ে মাত্র <strong className="text-brand-lime">৳১৫.০০</strong> করেছি। অফারের সময় শেষ হওয়ার আগে আজই অর্ডার করুন!
               </p>
             </div>
 
@@ -127,7 +153,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
               </div>
 
               <div className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 rounded-lg bg-brand-green-950 shadow-md border border-brand-green-800 p-2.5">
-                <p className="text-[9px] font-bold text-gray-400 font-mono uppercase tracking-wider">রিসার্চ রেটিং</p>
+                <p className="text-[9px] font-bold text-gray-400 font-mono uppercase tracking-wider">রিসearch রেটিং</p>
                 <div className="flex text-amber-500 items-center justify-center gap-0.5 mt-1">
                   <span className="text-xs font-bold text-white mr-1">৪.৭</span>
                   <span className="text-[10px] text-yellow-400">★</span>
