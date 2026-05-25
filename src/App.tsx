@@ -7,6 +7,7 @@ import SpecialOffer from './components/SpecialOffer';
 import Testimonials from './components/Testimonials';
 import OrchardGallery from './components/OrchardGallery';
 import Footer from './components/Footer';
+import FAQ from './components/FAQ';
 import CartDrawer from './components/CartDrawer';
 import Checkout from './components/Checkout';
 import SheetsSyncModal from './components/SheetsSyncModal';
@@ -205,6 +206,9 @@ export default function App() {
 
               {/* Double-direction scroll interactive image gallery */}
               <OrchardGallery />
+
+              {/* FAQ Section (SEO, AEO, and GEO optimized) */}
+              <FAQ />
             </motion.div>
           ) : (
             <motion.div

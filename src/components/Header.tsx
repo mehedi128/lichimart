@@ -24,6 +24,19 @@ export default function Header({
   onSheetsConfigToggle,
 }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAdminVisible, setIsAdminVisible] = useState(false);
+
+  React.useEffect(() => {
+    const hasAdminQuery = window.location.search.includes('admin') || window.location.search.includes('config') || window.location.search.includes('test');
+    const hasAdminStorage = localStorage.getItem('show_sheets_admin') === 'true';
+
+    if (hasAdminQuery) {
+      localStorage.setItem('show_sheets_admin', 'true');
+      setIsAdminVisible(true);
+    } else if (hasAdminStorage) {
+      setIsAdminVisible(true);
+    }
+  }, []);
 
   const navItems = [
     { label: 'হোম', target: 'home' },
@@ -56,7 +69,7 @@ export default function Header({
               rel="noreferrer"
               className="flex items-center gap-1.5 hover:text-white transition-colors"
             >
-              <Facebook className="h-3.5 w-3.5 fill-current" />
+              <Facebook className="h-3.5 w-3.5 text-white fill-white" />
               <span>আমাদের ফেসবুক পেজ ভিজিট করুন: facebook.com/lichimart</span>
             </a>
           </div>
@@ -97,19 +110,21 @@ export default function Header({
             className="flex sm:hidden p-1.5 text-gray-300 hover:text-brand-lime"
             title="Facebook Page"
           >
-            <Facebook className="h-5 w-5 fill-current" />
+            <Facebook className="h-5 w-5 fill-[#1877F2] text-[#1877F2]" />
           </a>
 
           {/* Google Sheets Sync Admin Button */}
-          <button
-            onClick={onSheetsConfigToggle}
-            className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full hover:bg-brand-green-900 border border-transparent hover:border-brand-green-800 text-gray-300 hover:text-brand-lime transition-all cursor-pointer"
-            id="sheets-trigger-btn"
-            title="গুগল শিট সিঙ্ক"
-          >
-            <Database className="h-4 w-4 text-brand-lime" />
-            <span className="hidden sm:inline text-[11.5px] font-bold">শিট সিঙ্ক</span>
-          </button>
+          {isAdminVisible && (
+            <button
+              onClick={onSheetsConfigToggle}
+              className="relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-full hover:bg-brand-green-900 border border-transparent hover:border-brand-green-800 text-gray-300 hover:text-brand-lime transition-all cursor-pointer"
+              id="sheets-trigger-btn"
+              title="গুগল শিট সিঙ্ক"
+            >
+              <Database className="h-4 w-4 text-brand-lime" />
+              <span className="hidden sm:inline text-[11.5px] font-bold">শিট সিঙ্ক</span>
+            </button>
+          )}
 
           {/* Wishlist Button */}
           <button
