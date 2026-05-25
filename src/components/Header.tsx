@@ -110,7 +110,7 @@ export default function Header({
             className="flex sm:hidden p-1.5 text-gray-300 hover:text-brand-lime"
             title="Facebook Page"
           >
-            <Facebook className="h-5 w-5 fill-[#1877F2] text-[#1877F2]" />
+            <Facebook className="h-5 w-5 fill-white text-white" />
           </a>
 
           {/* Google Sheets Sync Admin Button */}
