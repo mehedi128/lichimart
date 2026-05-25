@@ -351,7 +351,7 @@ export default function ProductCatalog({
 
                     {/* WhatsApp Checkout direct CTA */}
                     <a
-                      href={`https://wa.me/8801947970939?text=${encodeURIComponent(
+                      href={`https://wa.me/8801752421224?text=${encodeURIComponent(
                         `আসসালামু আলাইকুম! আমি তাজা প্রিমিয়াম বোম্বাই লিচু অর্ডার করতে চাই।\nপরিমাণ: ${quantities[bombai.id] || 200} পিস`
                       )}`}
                       target="_blank"
@@ -486,7 +486,7 @@ export default function ProductCatalog({
 
                     {/* WhatsApp Checkout direct CTA */}
                     <a
-                      href={`https://wa.me/8801947970939?text=${encodeURIComponent(
+                      href={`https://wa.me/8801752421224?text=${encodeURIComponent(
                         `আসসালামু আলাইকুম! আমি তাজা প্রিমিয়াম চাইনা-৩ লিচু অর্ডার করতে চাই।\nপরিমাণ: ${quantities[china3.id] || 200} পিস`
                       )}`}
                       target="_blank"

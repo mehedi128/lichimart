@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CartItem, Product, CheckoutDetails, Order } from '../types';
 import { 
   ArrowLeft, CheckCircle2, Ticket, Gift, Trash2, ShieldCheck, 
   Search, Truck, Calendar, CreditCard, ChevronRight, Download, Package, RefreshCw
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { getSheetsConfig, appendRowToGoogleSheet, sendOrderToWebhook, formatOrderRow } from '../sheetsService';
+import { 
+  getSheetsConfig, appendRowToGoogleSheet, sendOrderToWebhook, formatOrderRow, 
+  fetchSheetsConfigFromFirestore, SheetsConfig, 
+  sendOrderToTelegram 
+} from '../sheetsService';
 
 // Custom SVG Logos for bKash, Nagad (Nogod) and Rocket
 const BkashLogo = ({ className = "w-8 h-8" }: { className?: string }) => (
@@ -85,6 +89,27 @@ export default function Checkout({
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'failed' | 'none'>('idle');
   const [processingStep, setProcessingStep] = useState('');
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
+  const [sheetsConfig, setSheetsConfig] = useState<SheetsConfig>(getSheetsConfig());
+
+  // Dynamic Google Sheets and Telegram config synchronization on mount
+  useEffect(() => {
+    // 1. Instantly read immediate cached settings from localStorage
+    const local = getSheetsConfig();
+    setSheetsConfig(local);
+
+    // 2. Fetch fresh dynamic settings from Firebase Firestore shared cloud state
+    const syncConfig = async () => {
+      try {
+        const fresh = await fetchSheetsConfigFromFirestore();
+        if (fresh) {
+          setSheetsConfig(fresh);
+        }
+      } catch (error) {
+        console.error('Failed to load shared SheetsConfig:', error);
+      }
+    };
+    syncConfig();
+  }, []);
 
   // Form Validations
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
@@ -150,8 +175,6 @@ export default function Checkout({
 
     setCheckoutStatus('processing');
     setSyncStatus('idle');
-
-    const sheetsConfig = getSheetsConfig();
     
     // Build final invoice early so we can sync it during processing screen
     const invoiceId = `LM-${Math.floor(1000 + Math.random() * 9005)}-${Math.random().toString(36).substring(2, 4).toUpperCase()}`;
@@ -177,20 +200,43 @@ export default function Checkout({
       placedAt: new Date().toLocaleString(),
     };
 
-    // Trigger async sheet sync in parallel in the background!
+    // Trigger async sheet and telegram sync in parallel in the background!
     const performSheetsSync = async () => {
-      if (sheetsConfig.syncMode === 'none') {
+      let activeConfig = sheetsConfig;
+
+      try {
+        // Fetch fresh dynamic settings from Firestore right before submitting to guarantee absolute reliability
+        const fresh = await fetchSheetsConfigFromFirestore();
+        if (fresh) {
+          activeConfig = fresh;
+          setSheetsConfig(fresh);
+        }
+      } catch (e) {
+        console.warn('Failed to pre-fetch fresh config from Firestore:', e);
+      }
+
+      // Handle Telegram notification delivery if configured
+      if (activeConfig.telegramEnabled && activeConfig.telegramBotToken && activeConfig.telegramChatId) {
+        try {
+          await sendOrderToTelegram(activeConfig.telegramBotToken, activeConfig.telegramChatId, newOrder);
+          console.log('Order notification sent to Telegram successfully!');
+        } catch (tgError) {
+          console.error('Failed to send Telegram notification:', tgError);
+        }
+      }
+
+      if (activeConfig.syncMode === 'none') {
         setSyncStatus('none');
         return;
       }
       setSyncStatus('syncing');
       try {
-        if (sheetsConfig.syncMode === 'webhook' && sheetsConfig.webhookUrl) {
-          await sendOrderToWebhook(sheetsConfig.webhookUrl, newOrder);
+        if (activeConfig.syncMode === 'webhook' && activeConfig.webhookUrl) {
+          await sendOrderToWebhook(activeConfig.webhookUrl, newOrder);
           setSyncStatus('success');
-        } else if (sheetsConfig.syncMode === 'oauth' && sheetsConfig.spreadsheetId) {
+        } else if (activeConfig.syncMode === 'oauth' && activeConfig.spreadsheetId) {
           const rowValues = formatOrderRow(newOrder);
-          await appendRowToGoogleSheet(sheetsConfig.spreadsheetId, sheetsConfig.sheetName, rowValues);
+          await appendRowToGoogleSheet(activeConfig.spreadsheetId, activeConfig.sheetName, rowValues);
           setSyncStatus('success');
         } else {
           setSyncStatus('none');
@@ -345,10 +391,6 @@ Website: https://www.facebook.com/lichimart
                 <span className="font-bold font-mono text-white text-xs">{o.orderId}</span>
               </div>
               <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
-                <span className="text-gray-400">Requested Harvest Date:</span>
-                <span className="font-bold text-white">{o.customer.deliveryDate}</span>
-              </div>
-              <div className="flex justify-between border-b border-brand-green-900 pb-1.5">
                 <span className="text-gray-400">Shipping Location:</span>
                 <span className="font-semibold text-white max-w-[180px] text-right line-clamp-2">{o.customer.address}</span>
               </div>
@@ -388,6 +430,17 @@ Website: https://www.facebook.com/lichimart
                 </div>
               )}
             </div>
+
+            {sheetsConfig.syncMode === 'none' && (
+              <div className="mt-4 p-3 rounded-xl border border-yellow-500/30 bg-yellow-500/5 text-xs text-yellow-350 space-y-1 text-left">
+                <p className="font-bold flex items-center gap-1 text-yellow-400 text-[11px]">
+                  ⚠️ গুগল শিট সিঙ্ক কনফিগার করা নেই!
+                </p>
+                <p className="leading-relaxed text-[10px] text-gray-300">
+                  আপনার এই গুরুত্বপূর্ণ অর্ডার ডেটাটি কোনো গুগল শিটে সেভ হয়নি। অর্ডারগুলো স্বয়ংক্রিয়ভাবে গুগল শিটে সেভ করতে অনুগ্রহ করে স্ক্রিনের উপরে <strong className="text-brand-lime font-bold">"গুগল শিট সিঙ্ক" (Sheets Sync)</strong> বাটনে ক্লিক করে সেটিংস অন করুন।
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Section 2: Financial receipts */}
@@ -415,13 +468,6 @@ Website: https://www.facebook.com/lichimart
                   <span className="font-mono text-white">৳{o.shipping.toFixed(2)}</span>
                 )}
               </div>
-
-              {o.discount > 0 && (
-                <div className="flex justify-between text-xs text-rose-400 font-medium">
-                  <span>Applied Promo Discount:</span>
-                  <span className="font-mono">-৳{o.discount.toFixed(2)}</span>
-                </div>
-              )}
             </div>
 
             <div className="border-t-2 border-brand-green-800 pt-3 flex justify-between text-sm">
@@ -807,7 +853,7 @@ Website: https://www.facebook.com/lichimart
             </div>
 
             {/* Direct pricing details */}
-            <div className="border-t border-brand-green-900 pt-4 space-y-2 border-b pb-4 text-xs">
+             <div className="border-t border-brand-green-900 pt-4 space-y-2 border-b pb-4 text-xs">
               <div className="flex items-center justify-between text-gray-400">
                 <span>Products Subtotal:</span>
                 <span className="font-mono text-white font-semibold">৳{subtotal.toFixed(2)}</span>
@@ -820,12 +866,6 @@ Website: https://www.facebook.com/lichimart
                   <span className="font-mono text-white font-semibold">৳100.00</span>
                 )}
               </div>
-              {promoDiscount > 0 && (
-                <div className="flex items-center justify-between text-rose-400 font-semibold">
-                  <span>Discount Subtraction:</span>
-                  <span className="font-mono">-৳{promoDiscount.toFixed(2)}</span>
-                </div>
-              )}
             </div>
 
             {/* Total */}

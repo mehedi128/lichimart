@@ -1,11 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from 'firebase/auth';
+import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 import { Order } from './types';
 import firebaseConfig from '../firebase-applet-config.json';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 const provider = new GoogleAuthProvider();
 // Request only spreadsheet scope to manage lychee orders
@@ -90,13 +92,25 @@ export interface SheetsConfig {
   spreadsheetId: string;
   webhookUrl: string;
   sheetName: string;
+  telegramEnabled?: boolean;
+  telegramBotToken?: string;
+  telegramChatId?: string;
 }
 
 export const getSheetsConfig = (): SheetsConfig => {
   const stored = localStorage.getItem('lichimart_sheets_config');
   if (stored) {
     try {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored);
+      return {
+        syncMode: parsed.syncMode || 'none',
+        spreadsheetId: parsed.spreadsheetId || '',
+        webhookUrl: parsed.webhookUrl || '',
+        sheetName: parsed.sheetName || 'Orders',
+        telegramEnabled: parsed.telegramEnabled ?? false,
+        telegramBotToken: parsed.telegramBotToken || '8686119362:AAE7IzSmieNJ5_JEyPFTrsKL2sCv0XuU5wg',
+        telegramChatId: parsed.telegramChatId || '',
+      };
     } catch (e) {
       // Return defaults
     }
@@ -106,11 +120,35 @@ export const getSheetsConfig = (): SheetsConfig => {
     spreadsheetId: '',
     webhookUrl: '',
     sheetName: 'Orders',
+    telegramEnabled: false,
+    telegramBotToken: '8686119362:AAE7IzSmieNJ5_JEyPFTrsKL2sCv0XuU5wg',
+    telegramChatId: '',
   };
 };
 
-export const saveSheetsConfig = (config: SheetsConfig) => {
+export const saveSheetsConfig = async (config: SheetsConfig): Promise<void> => {
   localStorage.setItem('lichimart_sheets_config', JSON.stringify(config));
+  try {
+    const docRef = doc(db, 'settings', 'sheets_sync');
+    await setDoc(docRef, config);
+  } catch (error) {
+    console.error('Failed to save sheets configuration to Firestore:', error);
+  }
+};
+
+export const fetchSheetsConfigFromFirestore = async (): Promise<SheetsConfig | null> => {
+  try {
+    const docRef = doc(db, 'settings', 'sheets_sync');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data() as SheetsConfig;
+      localStorage.setItem('lichimart_sheets_config', JSON.stringify(data));
+      return data;
+    }
+  } catch (error) {
+    console.error('Failed to load sheets configuration from Firestore:', error);
+  }
+  return null;
 };
 
 // Standard order details to flat columns
@@ -278,18 +316,19 @@ export const sendOrderToWebhook = async (webhookUrl: string, order: Order): Prom
     subtotal: order.subtotal,
     discount: order.discount,
     total: order.total,
-    deliverySchedule: rowValues[11],
+    deliverySchedule: `${order.customer.deliveryDate} | ${order.customer.deliveryTimeSlot || ''}`,
     instructions: order.customer.instructions || '',
     rowValues, // complete raw row values for simple append
   };
 
   try {
-    // Note: We use no-cors if the merchant has standard Apps Script endpoints which might violate standard cors but still accept post
+    // Note: We use Content-Type: text/plain;charset=utf-8 to bypass CORS preflight checks entirely.
+    // This allows seamless and 100% reliable post requests directly to Google Apps Script web apps
+    // under any customer browser environment (desktop, mobile safari, etc.).
     const response = await fetch(webhookUrl, {
       method: 'POST',
-      mode: 'no-cors', // standard Apps Script redirects trigger CORS errors, no-cors allows payload delivery safely!
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'text/plain;charset=utf-8',
       },
       body: JSON.stringify(payload),
     });
@@ -354,3 +393,110 @@ function doPost(e) {
   }
 }`;
 };
+
+export const sendOrderToTelegram = async (botToken: string, chatId: string, order: Order): Promise<boolean> => {
+  const itemsText = order.items
+    .map((item) => `• <b>${item.product.name}</b>\n   ➔ ${item.quantity} পিস (৳${(item.product.price * item.quantity).toFixed(0)})`)
+    .join('\n\n');
+  
+  const paymentMethodLabel = 
+    order.customer.billingMethod === 'bkash' ? 'bKash (বিকাশ) 📱' :
+    order.customer.billingMethod === 'nagad' ? 'Nagad (নগদ) 📱' :
+    order.customer.billingMethod === 'rocket' ? 'Rocket (রকেট) 🚀' :
+    'Bank Transfer 🏦';
+
+  const messageText = `🔔 <b>নতুন অর্ডার নোটিফিকেশন!</b> 🔔\n───────────────────\n📂 <b>অর্ডার আইডি:</b> #${order.orderId}\n📅 <b>অর্ডারের সময়:</b> ${order.placedAt}\n\n👤 <b>ক্রেতার নাম:</b> ${order.customer.fullName}\n📞 <b>মোবাইল নম্বর:</b> ${order.customer.phone}\n📍 <b>ডেলিভারি ঠিকানা:</b> ${order.customer.address}\n\n📦 <b>পণ্য তালিকা:</b>\n${itemsText}\n\n📖 <b>পেমেন্ট মেথড:</b> ${paymentMethodLabel}\n💳 <b>পেমেন্ট ডিটেইলস (TrxID/Phone):</b> ${order.customer.transactionIdOrPhone || 'N/A'}\n✏️ <b>বিশেষ নির্দেশনা:</b> ${order.customer.instructions || 'N/A'}\n───────────────────\n💸 <b>সাবটোটাল:</b> ৳${order.subtotal.toFixed(0)}\n🚚 <b>ডেলিভারি ফি:</b> ৳${order.shipping.toFixed(0)}\n📉 <b>ডিসকাউন্ট:</b> ৳${order.discount.toFixed(0)}\n🛍️ <b>সর্বমোট বিল:</b> <b>৳${order.total.toFixed(0)}</b>\n───────────────────`;
+
+  try {
+    const response = await fetch('/api/telegram/send', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        botToken,
+        chatId,
+        message: messageText,
+      }),
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      return data.success;
+    }
+    return false;
+  } catch (error) {
+    console.error('Failed to send Telegram notification:', error);
+    throw error;
+  }
+};
+
+export const getTelegramChatId = async (botToken: string): Promise<string | null> => {
+  try {
+    const response = await fetch('/api/telegram/getChatId', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ botToken }),
+    });
+    if (!response.ok) return null;
+    const data = await response.json();
+    if (data.success && data.chatId) {
+      return data.chatId;
+    }
+  } catch (error) {
+    console.error('Failed to retrieve Telegram Chat ID:', error);
+  }
+  return null;
+};
+
+// Telegram Notification interface and synchronizations
+export interface TelegramConfig {
+  enabled: boolean;
+  botToken: string;
+  chatId: string;
+}
+
+export const getTelegramConfig = (): TelegramConfig => {
+  const stored = localStorage.getItem('lichimart_telegram_config');
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch (e) {
+      // ignore
+    }
+  }
+  return {
+    enabled: false,
+    botToken: '8686119362:AAE7IzSmieNJ5_JEyPFTrsKL2sCv0XuU5wg',
+    chatId: '',
+  };
+};
+
+export const saveTelegramConfig = async (config: TelegramConfig): Promise<void> => {
+  localStorage.setItem('lichimart_telegram_config', JSON.stringify(config));
+  try {
+    const docRef = doc(db, 'settings', 'telegram_sync');
+    await setDoc(docRef, config);
+  } catch (error) {
+    console.error('Failed to save telegram configuration to Firestore:', error);
+  }
+};
+
+export const fetchTelegramConfigFromFirestore = async (): Promise<TelegramConfig | null> => {
+  try {
+    const docRef = doc(db, 'settings', 'telegram_sync');
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data() as TelegramConfig;
+      localStorage.setItem('lichimart_telegram_config', JSON.stringify(data));
+      return data;
+    }
+  } catch (error) {
+    console.error('Failed to load telegram configuration from Firestore:', error);
+  }
+  return null;
+};
+
+

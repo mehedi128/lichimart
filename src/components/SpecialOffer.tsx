@@ -111,7 +111,7 @@ export default function SpecialOffer({ onClaimOffer }: SpecialOfferProps) {
               {/* Clean Action Button */}
               <div className="pt-2 w-full sm:w-auto">
                 <a
-                  href={`https://wa.me/8801947970939?text=${encodeURIComponent(
+                  href={`https://wa.me/8801752421224?text=${encodeURIComponent(
                     "আসসালামু আলাইকুম! আমি আপনাদের কালবৈশাখী স্পেশাল অফারটি (১০০০ পিস লিচু অর্ডারে ১০০ পিস লিচু ফ্রি) বুক করতে চাই।"
                   )}`}
                   target="_blank"

@@ -133,8 +133,8 @@ export default function Footer({ onNavigate, onWishlistToggle }: FooterProps) {
             </a>
           </p>
           <p className="font-heading text-white text-sm sm:text-base tracking-wide font-medium">
-            <a href="tel:01947970939" className="hover:text-brand-lime transition">
-              01947970939
+            <a href="tel:01752421224" className="hover:text-brand-lime transition">
+              01752421224
             </a>
           </p>
           <p className="font-heading text-white text-sm sm:text-base tracking-wide font-medium">

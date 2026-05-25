@@ -78,7 +78,7 @@ export default function Hero({ onExploreClick, phone }: HeroProps) {
           </button>
 
           <a
-            href={`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
+            href={`https://wa.me/${phone.startsWith('88') ? phone.replace(/[^0-9]/g, '') : `88${phone.replace(/[^0-9]/g, '')}`}?text=${encodeURIComponent(
               "আসসালামু আলাইকুম! আমি তরতাজা প্রিমিয়াম লিচু অর্ডার করতে চাই।"
             )}`}
             target="_blank"

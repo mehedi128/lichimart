@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, Database, FileSpreadsheet, Chrome, Copy, Check, 
-  RefreshCw, LogOut, ExternalLink, HelpCircle, Save, Settings
+  RefreshCw, LogOut, ExternalLink, HelpCircle, Save, Settings,
+  Send, MessageSquare, Bot, Bell
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   getSheetsConfig, saveSheetsConfig, googleSignIn, logout, initAuth, 
   createNewSpreadsheet, getAppsScriptTemplate, SheetsConfig,
-  formatOrderRow, appendRowToGoogleSheet, sendOrderToWebhook
+  formatOrderRow, appendRowToGoogleSheet, sendOrderToWebhook,
+  sendOrderToTelegram, getTelegramChatId, fetchSheetsConfigFromFirestore
 } from '../sheetsService';
 import { User } from 'firebase/auth';
 
@@ -22,16 +24,106 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
     spreadsheetId: '',
     webhookUrl: '',
     sheetName: 'Orders',
+    telegramEnabled: false,
+    telegramBotToken: '8686119362:AAE7IzSmieNJ5_JEyPFTrsKL2sCv0XuU5wg',
+    telegramChatId: '',
   });
 
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [tgLoading, setTgLoading] = useState(false);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
   const [copied, setCopied] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
 
-  // Initialize auth
+  const fetchChatIdFromBot = async () => {
+    if (!config.telegramBotToken?.trim()) {
+      setMessage({ text: 'অনুগ্রহ করে প্রথমে টেলিগ্রাম বোট টোকেন প্রদান করুন।', type: 'error' });
+      return;
+    }
+    setTgLoading(true);
+    setMessage(null);
+    try {
+      const detectedChatId = await getTelegramChatId(config.telegramBotToken);
+      if (detectedChatId) {
+        setConfig(prev => ({ ...prev, telegramChatId: detectedChatId }));
+        setMessage({ text: `সাফল্য! আমরা আপনার চ্যাট আইডি পেয়েছি: ${detectedChatId} 🎉`, type: 'success' });
+      } else {
+        setMessage({
+          text: 'চ্যাট আইডি পাওয়া যায়নি। অনুগ্রহ করে প্রথমে আপনার টেলিগ্রাম বোট (@website_order_notification_bot) এ প্রবেশ করুন, এবং /start লিখে মেসেজ দিন, তারপর পুনরায় চেষ্টা করুন। 🤖',
+          type: 'error'
+        });
+      }
+    } catch (e: any) {
+      console.error(e);
+      setMessage({ text: 'চ্যাট আইডি খুঁজতে গিয়ে ত্রুটি হয়েছে: ' + (e.message || 'Unknown error'), type: 'error' });
+    } finally {
+      setTgLoading(false);
+    }
+  };
+
+  const handleTestTelegram = async () => {
+    if (!config.telegramBotToken?.trim() || !config.telegramChatId?.trim()) {
+      setMessage({ text: 'বোট টোকেন এবং চ্যাট আইডি উভয়ই আবশ্যক।', type: 'error' });
+      return;
+    }
+    setLoading(true);
+    setMessage(null);
+
+    const testOrder = {
+      orderId: `TEST-${Math.floor(1000 + Math.random() * 9000)}`,
+      customer: {
+        fullName: 'টেস্ট কাস্টমার (Test Customer)',
+        phone: '01711111111',
+        email: 'test@lichimart.com',
+        address: 'দিনাজপুর লিচু বাগান রোড, সদর',
+        instructions: 'টেলিগ্রাম নোটিফিকেশন টেস্ট কানেকশন সফল হয়েছে!',
+        deliveryDate: '2026-05-25',
+        deliveryTimeSlot: 'বিকেল ৪:০০ - সন্ধ্যা ৬:০০টা',
+        billingMethod: 'bkash' as const,
+        transactionIdOrPhone: 'BKASH-TEST-999',
+      },
+      items: [
+        {
+          product: {
+            id: 'test-1',
+            name: 'টেস্ট দিনাজপুরী লিচু (মাদার গাছ)',
+            price: 350,
+            description: 'টেস্ট ডেসক্রিপশন',
+            image: '',
+            rating: 5,
+            reviewsCount: 1,
+            category: 'fresh' as const,
+            weight: '100 Pcs',
+            benefits: [],
+          },
+          quantity: 1,
+        }
+      ],
+      subtotal: 350,
+      shipping: 100,
+      discount: 0,
+      total: 450,
+      placedAt: new Date().toLocaleString(),
+    };
+
+    try {
+      const success = await sendOrderToTelegram(config.telegramBotToken, config.telegramChatId, testOrder);
+      if (success) {
+        setMessage({ text: 'অভিনন্দন! আপনার টেলিগ্রাম বোটে টেস্ট অর্ডার নোটিফিকেশন পাঠানো হয়েছে। চেক করুন! 🔔📱', type: 'success' });
+      } else {
+        throw new Error('Telegram trigger failed');
+      }
+    } catch (e: any) {
+      console.error(e);
+      setMessage({ text: 'টেলিগ্রাম নোটিফিকেশন পাঠাতে ব্যর্থ: ' + (e.message || 'Unknown error. Token or Chat ID may be invalid.'), type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initialize auth and load settings
   useEffect(() => {
     const unsubscribe = initAuth(
       (user, token) => {
@@ -44,8 +136,22 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
       }
     );
 
-    // Load saved sheets configuration
-    setConfig(getSheetsConfig());
+    // 1. Load saved sheets configuration from local cache
+    const cached = getSheetsConfig();
+    setConfig(cached);
+
+    // 2. Load fresh shared configuration from Firestore
+    const syncWithCloud = async () => {
+      try {
+        const fresh = await fetchSheetsConfigFromFirestore();
+        if (fresh) {
+          setConfig(fresh);
+        }
+      } catch (error) {
+        console.error('Failed to sync SheetsConfig on mount:', error);
+      }
+    };
+    syncWithCloud();
 
     return () => unsubscribe();
   }, []);
@@ -183,7 +289,7 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
     }
   };
 
-  const handleSaveConfig = () => {
+  const handleSaveConfig = async () => {
     if (config.syncMode === 'oauth' && !config.spreadsheetId.trim()) {
       setMessage({ text: 'অনুগ্রহ করে গুগল স্প্রেডশিট আইডি প্রদান করুন বা নতুন তৈরি করুন।', type: 'error' });
       return;
@@ -192,9 +298,27 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
       setMessage({ text: 'অনুগ্রহ করে গুগল অ্যাপস স্ক্রিপ্ট ওয়েবহুক URL প্রদান করুন।', type: 'error' });
       return;
     }
+    if (config.telegramEnabled) {
+      if (!config.telegramBotToken?.trim()) {
+        setMessage({ text: 'টেলিগ্রাম নোটিফিকেশন সচল করতে অনুগ্রহ করে বোট টোকেন প্রদান করুন।', type: 'error' });
+        return;
+      }
+      if (!config.telegramChatId?.trim()) {
+        setMessage({ text: 'টেলিগ্রাম নোটিফিকেশন সচল করতে অনুগ্রহ করে আপনার "চ্যাট আইডি" (Chat ID) দিন। উপরের নির্দেশিকা দেখুন।', type: 'error' });
+        return;
+      }
+    }
 
-    saveSheetsConfig(config);
-    setMessage({ text: 'আপনার অর্ডার সিঙ্ক সেটিংস সফলভাবে সংরক্ষণ করা হয়েছে! ✅', type: 'success' });
+    setLoading(true);
+    try {
+      await saveSheetsConfig(config);
+      setMessage({ text: 'আপনার অর্ডার সিঙ্ক সেটিংস সফলভাবে সংরক্ষণ করা হয়েছে! ✅', type: 'success' });
+    } catch (e: any) {
+      console.error(e);
+      setMessage({ text: 'সেটিংস সেভ করতে ব্যর্থ: ' + (e.message || 'Unknown error'), type: 'error' });
+    } finally {
+      setLoading(false);
+    }
     
     // Auto clear message after 4s
     setTimeout(() => {
@@ -548,6 +672,99 @@ export default function SheetsSyncModal({ isOpen, onClose }: SheetsSyncModalProp
               </motion.div>
             )}
           </AnimatePresence>
+
+          {/* Telegram Notification Support Card */}
+          <div className="border-t border-brand-green-900 pt-6 space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-2xl bg-brand-green-950/40 border border-brand-green-900">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/10">
+                  <Bot className="h-5 w-5" />
+                </span>
+                <div>
+                  <h4 className="text-sm font-bold text-white">টেলিগ্রাম ইনস্ট্যান্ট নোটিফিকেশন</h4>
+                  <p className="text-[11px] text-gray-400">নতুন অর্ডার আসার সাথে সাথে বোটে মেসেজ চলে যাবে</p>
+                </div>
+              </div>
+              
+              {/* Toggle Switch */}
+              <button
+                type="button"
+                onClick={() => setConfig(prev => ({ ...prev, telegramEnabled: !prev.telegramEnabled }))}
+                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                  config.telegramEnabled ? 'bg-emerald-500' : 'bg-brand-green-800'
+                }`}
+              >
+                <span
+                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                    config.telegramEnabled ? 'translate-x-5' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
+
+            {config.telegramEnabled && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                className="p-5 rounded-2xl bg-brand-green-950/30 border border-brand-green-900 space-y-4 text-left"
+              >
+                {/* Bot Token */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-gray-300">টেলিগ্রাম বোট টোকেন (Telegram Bot Token):</label>
+                  <input
+                    type="text"
+                    value={config.telegramBotToken}
+                    onChange={(e) => setConfig({ ...config, telegramBotToken: e.target.value })}
+                    placeholder="8686119362:AAE7Iz..."
+                    className="w-full bg-brand-green-950 border border-brand-green-800 focus:border-brand-lime rounded-xl px-4 py-3 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors font-mono"
+                  />
+                  <p className="text-[10px] text-gray-440">
+                    আপনার বোটে এক্সেস করার সিক্রেট টোকেনটি এখানে অলরেডি দেওয়া আছে। আপনি চাইলে আপনার নিজের কাস্টম বোটও ব্যবহার করতে পারেন।
+                  </p>
+                </div>
+
+                {/* Chat ID */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-gray-300 flex items-center justify-between">
+                    <span>আপনার টেলিগ্রাম চ্যাট আইডি (Telegram Chat ID):</span>
+                    <button
+                      type="button"
+                      onClick={fetchChatIdFromBot}
+                      disabled={tgLoading || !config.telegramBotToken?.trim()}
+                      className="text-[10px] text-[#38BDF8] hover:underline font-bold flex items-center gap-1 disabled:opacity-50 transition cursor-pointer"
+                    >
+                      {tgLoading ? <RefreshCw className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                      <span>স্বয়ংক্রিয়ভাবে চ্যাট আইডি খুঁজুন</span>
+                    </button>
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={config.telegramChatId}
+                      onChange={(e) => setConfig({ ...config, telegramChatId: e.target.value })}
+                      placeholder="উদাঃ 45781295"
+                      className="flex-grow bg-brand-green-950 border border-brand-green-800 focus:border-brand-lime rounded-xl px-4 py-3 text-xs text-gray-100 placeholder-gray-500 outline-none transition-colors font-mono"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleTestTelegram}
+                      disabled={loading || !config.telegramBotToken?.trim() || !config.telegramChatId?.trim()}
+                      className="px-4 py-3 text-xs bg-brand-green-850 hover:bg-brand-green-800 text-sky-400 font-bold rounded-xl border border-brand-green-700/40 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center gap-1.5 shrink-0 cursor-pointer"
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                      <span>টেস্ট নোটিফিকেশন</span>
+                    </button>
+                  </div>
+                  <div className="text-[11px] text-gray-400 leading-relaxed bg-[#032014]/55 p-3.5 rounded-xl border border-brand-green-900/40 space-y-1">
+                    <p className="font-bold text-white">কিভাবে চ্যাট আইডি পাবেন?</p>
+                    <p>১. টেলিগ্রামে আপনার বোটে যান: <a href="https://t.me/website_order_notification_bot" target="_blank" rel="noreferrer" className="text-brand-lime hover:underline font-bold inline-flex items-center gap-0.5">@website_order_notification_bot <ExternalLink className="h-2.5 w-2.5" /></a></p>
+                    <p>২. বোটে প্রবেশ করে <strong className="text-white">/start</strong> লিখুন বা যেকোনো মেসেজ দিন।</p>
+                    <p>৩. এরপর উপরের <strong className="text-sky-400">"স্বয়ংক্রিয়ভাবে চ্যাট আইডি খুঁজুন"</strong> বাটনে ক্লিক করুন। চ্যাট আইডি চলে আসবে!</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
         </div>
 
         {/* Footer actions */}

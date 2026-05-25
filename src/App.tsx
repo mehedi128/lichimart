@@ -10,6 +10,7 @@ import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import Checkout from './components/Checkout';
 import SheetsSyncModal from './components/SheetsSyncModal';
+import { fetchSheetsConfigFromFirestore } from './sheetsService';
 
 import { LYCHEE_PRODUCTS } from './data';
 import { Product, CartItem } from './types';
@@ -17,7 +18,7 @@ import { Heart, Search, ShoppingBag, Trash2, X, Plus, Play, Calendar, Link, Spar
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
-  const HOTLINE_PHONE = '01947970939';
+  const HOTLINE_PHONE = '01752421224';
 
   // State Management
   const [cartCount, setCartCount] = useState(0);
@@ -43,6 +44,8 @@ export default function App() {
         const parsed = JSON.parse(storedWishlist);
         setWishlist(parsed);
       }
+      // Prefetch global Google Sheets config from Firestore
+      fetchSheetsConfigFromFirestore();
     } catch (e) {
       console.warn('LocalStorage retrieval failed', e);
     }

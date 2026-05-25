@@ -46,7 +46,7 @@ export default function Header({
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1">
               <Phone className="h-3.5 w-3.5" />
-              কীভাবে অর্ডার করবেন? কল/হোয়াটসঅ্যাপ: <a href="tel:01947970939" className="hover:underline font-semibold text-white cursor-pointer">01947970939</a>
+              কীভাবে অর্ডার করবেন? কল/হোয়াটসঅ্যাপ: <a href="tel:01752421224" className="hover:underline font-semibold text-white cursor-pointer">01752421224</a>
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -167,7 +167,7 @@ export default function Header({
           </div>
 
           <div className="flex flex-col sm:flex-row justify-between text-xs text-gray-400 pt-2 font-mono gap-1">
-            <a href="tel:01947970939" className="hover:text-brand-lime">কল/হোয়াটসঅ্যাপ: 01947970939</a>
+            <a href="tel:01752421224" className="hover:text-brand-lime">কল/হোয়াটসঅ্যাপ: 01752421224</a>
             <span>📍 সরাসরি বাগান থেকে তাজা সরবরাহ</span>
           </div>
         </div>
